@@ -6,20 +6,22 @@
       height: autoHeight ? 'auto' : '100%'
     }"
   >
-    <div v-if="enableButtons && !$slots.customButtons" class="carousel__buttons">
-      <button class="carousel__button" @click="prev">
-        <slot v-if="$slots.prevButton" name="prevButton" />
-        <span v-else>&#60;</span>
-      </button>
+    <template v-if="enableButtons">
+      <template>
+        <slot name="customButtons" />
+      </template>
 
-      <button class="carousel__button" @click="next">
-        <slot v-if="$slots.nextButton" name="nextButton" />
-        <span v-else>&#62;</span>
-      </button>
-    </div>
+      <div v-if="!$slots.customButtons" class="carousel__buttons">
+        <button class="carousel__button" @click="prev">
+          <slot v-if="$slots.prevButton" name="prevButton" />
+          <span v-else>&#60;</span>
+        </button>
 
-    <template>
-      <slot name="customButtons" />
+        <button class="carousel__button" @click="next">
+          <slot v-if="$slots.nextButton" name="nextButton" />
+          <span v-else>&#62;</span>
+        </button>
+      </div>
     </template>
 
     <div
@@ -43,33 +45,39 @@
       </div>
     </div>
 
-    <div
-      class="carousel__dots"
-      :style="{
-        margin: dotsData.margin,
-        padding: dotsData.padding,
-        justifyContent: dotsData.alignment === 'center' ? 'center' : `flex-${dotsData.alignment}`,
-      }"
-    >
-      <button
-        v-for="(dot, idx) in $slots.default.length"
-        :key="`carousel-dot-${idx}`"
+    <template v-if="enableDots">
+      <template>
+        <slot name="customDots" />
+      </template>
+
+      <div
+        v-if="!$slots.customDots"
+        class="carousel__dots"
         :style="{
-          width: `${dotsData.dots.size}px`,
-          height: `${dotsData.dots.size}px`,
-          backgroundColor: dotsData.dots.color,
-          border: dotsData.dots.border,
-          marginRight:
-            idx === $slots.default.length - 1 ? 0 : `${dotsData.dots.spacing}px`
-        }"
-        :class="{
-          carousel__dot: true,
-          'carousel__dot--circled': dotsData.dots.circled
+          margin: dotsData.margin,
+          padding: dotsData.padding
         }"
       >
-        {{ idx }}
-      </button>
-    </div>
+        <button
+          v-for="(dot, idx) in pages"
+          :key="`carousel-dot-${idx}`"
+          :style="{
+            width: `${dotsData.dots.size}px`,
+            height: `${dotsData.dots.size}px`,
+            backgroundColor: dotsData.dots.color,
+            border: dotsData.dots.border,
+            marginRight:
+              idx === $slots.default.length - 1
+                ? 0
+                : `${dotsData.dots.spacing}px`
+          }"
+          class="carousel__dot"
+          @click="goToPage(idx)"
+        >
+          {{ idx }}
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -112,6 +120,7 @@
   &__dots {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
 
   &__dot {
@@ -120,12 +129,10 @@
     outline: none;
     cursor: pointer;
 
+    border-radius: 50%;
+
     &:hover {
       opacity: 0.8;
-    }
-
-    &--circled {
-      border-radius: 50%;
     }
   }
 }
@@ -175,18 +182,43 @@ export default class Carousel extends Vue {
   private dotsData!: IDotsData;
 
   private translateValue = 0;
+  private lastTranslateValue = 0;
   private trackWidth = 0;
   private carouselElementWidth = 0;
 
   private currentSlideIndex = this.initialSlideIndex;
+  private currentPageIndex = 0;
 
   public $refs!: {
     carouselElement: HTMLDivElement | HTMLDivElement[];
     carousel: HTMLDivElement;
   };
 
+  private get itemsCount() {
+    return this.$slots.default!.length;
+  }
+
   private get maximumIndex() {
-    return this.$slots.default!.length - this.itemsPerView;
+    return this.itemsCount - this.itemsPerView;
+  }
+
+  private get pages() {
+    return Math.ceil(this.itemsCount / this.itemsPerView);
+  }
+
+  private get itemsPerPage() {
+    const itemsPerPage: number[] = [];
+    let remainder = this.itemsCount;
+
+    for (let i = 0; i < this.pages; i++) {
+      itemsPerPage.push(
+        remainder > this.itemsPerView ? this.itemsPerView : remainder
+      );
+
+      remainder = remainder - this.itemsPerView;
+    }
+
+    return itemsPerPage;
   }
 
   private next() {
@@ -212,7 +244,21 @@ export default class Carousel extends Vue {
     const carouselWidth = this.$refs.carousel.offsetWidth;
 
     this.carouselElementWidth = carouselWidth / this.itemsPerView;
-    this.trackWidth = this.carouselElementWidth * this.$slots.default!.length;
+    this.trackWidth = this.carouselElementWidth * this.itemsCount;
+  }
+
+  private goToPage(pageIndex: number) {
+    if (pageIndex !== this.currentPageIndex) {
+      const translateValue =
+        this.carouselElementWidth * this.itemsPerPage[pageIndex];
+
+      this.translateValue =
+        pageIndex > this.currentPageIndex
+          ? this.translateValue - translateValue
+          : this.lastTranslateValue;
+
+      this.currentPageIndex = pageIndex;
+    }
   }
 
   private mounted() {
