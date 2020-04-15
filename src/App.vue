@@ -1,29 +1,42 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <Carousel enable-dots>
+      <div class="item">1</div>
+      <div class="item">2</div>
+      <div class="item">3</div>
+      <div class="item">4</div>
+    </Carousel>
   </div>
 </template>
 
+<style lang="scss" scoped>
+#app {
+  height: 200px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: blueviolet;
+  font-size: 16px;
+
+  height: 100%;
+}
+</style>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "./components/HelloWorld.vue";
+
+import Carousel from "@/components/Carousel.vue";
 
 @Component({
   components: {
-    HelloWorld
+    Carousel
   }
 })
 export default class App extends Vue {}
 </script>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style lang="scss"></style>
