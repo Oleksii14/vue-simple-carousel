@@ -176,6 +176,9 @@ export default class Carousel extends Vue {
   @Prop({ default: false, type: Boolean })
   private goBackOnEnd!: boolean;
 
+  @Prop({ default: false, type: Boolean })
+  private navigateBySlide!: boolean;
+
   @Prop({ default: 0, type: Number })
   private initialSlideIndex!: number;
 
@@ -205,7 +208,7 @@ export default class Carousel extends Vue {
     return this.$slots.default!.length;
   }
 
-  private get maximumIndex() {
+  private get maximumSlideIndex() {
     return this.itemsCount - this.itemsPerView;
   }
 
@@ -228,18 +231,60 @@ export default class Carousel extends Vue {
     return itemsPerPage;
   }
 
+  private goToBeginning() {
+    this.currentPageIndex = 0;
+    this.currentSlideIndex = 0;
+    this.translateValue = 0;
+  }
+
   private next() {
-    if (this.currentPageIndex < (this.pages - 1)) {
+    this.navigateBySlide ? this.onNextBySlide() : this.onNextByPage();
+  }
+
+  private onNextBySlide() {
+    if (this.currentSlideIndex < this.maximumSlideIndex) {
+      this.currentSlideIndex++;
+      this.translateValue = this.translateValue - this.carouselElementWidth;
+
+      if (
+        this.currentSlideIndex % this.itemsPerView === 0 ||
+        this.itemsPerPage[this.currentPageIndex + 1] < this.itemsPerView
+      ) {
+        this.currentPageIndex++;
+      }
+    } else {
+      if (this.goBackOnEnd) {
+        this.goToBeginning();
+      }
+    }
+  }
+
+  private onNextByPage() {
+    if (this.currentPageIndex < this.pages - 1) {
       this.goToPage(this.currentPageIndex + 1);
     } else {
       if (this.goBackOnEnd) {
-        this.currentPageIndex = 0;
-        this.translateValue = 0;
+        this.goToBeginning();
       }
     }
   }
 
   private prev() {
+    this.navigateBySlide ? this.onPrevBySlide() : this.onPrevByPage();
+  }
+
+  private onPrevBySlide() {
+    if (this.currentSlideIndex > 0) {
+      this.currentSlideIndex--;
+      this.translateValue = this.translateValue + this.carouselElementWidth;
+
+      if (this.currentSlideIndex % this.itemsPerView === 0) {
+        this.currentPageIndex--;
+      }
+    }
+  }
+
+  private onPrevByPage() {
     if (this.currentPageIndex > 0) {
       this.goToPage(this.currentPageIndex - 1);
     }
@@ -262,12 +307,20 @@ export default class Carousel extends Vue {
         this.carouselElementWidth * this.itemsPerPage[pageIndex] +
         (pageIndex - 1) * this.itemsPerView * this.carouselElementWidth
       );
+
+      this.currentSlideIndex =
+        this.itemsPerPage[pageIndex] < this.itemsPerView
+          ? pageIndex * this.itemsPerView -
+            (this.itemsPerView - this.itemsPerPage[pageIndex])
+          : pageIndex * this.itemsPerView;
     } else {
       this.translateValue = -(
         this.carouselElementWidth *
         this.itemsPerView *
         pageIndex
       );
+
+      this.currentSlideIndex = this.itemsPerView * pageIndex;
     }
 
     this.currentPageIndex = pageIndex;

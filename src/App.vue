@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Carousel enable-dots>
+    <Carousel enable-dots navigate-by-slide>
       <div class="item">1</div>
       <div class="item">2</div>
       <div class="item">3</div>
