@@ -71,7 +71,10 @@
                 ? 0
                 : `${dotsData.dots.spacing}px`
           }"
-          class="carousel__dot"
+          :class="{
+            carousel__dot: true,
+            'carousel__dot--active': currentPageIndex === idx
+          }"
           @click="goToPage(idx)"
         >
           {{ idx }}
@@ -130,6 +133,10 @@
     cursor: pointer;
 
     border-radius: 50%;
+
+    &--active {
+      opacity: 0.7;
+    }
 
     &:hover {
       opacity: 0.8;
@@ -222,21 +229,19 @@ export default class Carousel extends Vue {
   }
 
   private next() {
-    if (this.currentSlideIndex < this.maximumIndex) {
-      this.currentSlideIndex++;
-      this.translateValue = this.translateValue - this.carouselElementWidth;
+    if (this.currentPageIndex < (this.pages - 1)) {
+      this.goToPage(this.currentPageIndex + 1);
     } else {
       if (this.goBackOnEnd) {
-        this.currentSlideIndex = 0;
+        this.currentPageIndex = 0;
         this.translateValue = 0;
       }
     }
   }
 
   private prev() {
-    if (this.currentSlideIndex > 0) {
-      this.currentSlideIndex--;
-      this.translateValue = this.translateValue + this.carouselElementWidth;
+    if (this.currentPageIndex > 0) {
+      this.goToPage(this.currentPageIndex - 1);
     }
   }
 
@@ -248,17 +253,24 @@ export default class Carousel extends Vue {
   }
 
   private goToPage(pageIndex: number) {
-    if (pageIndex !== this.currentPageIndex) {
-      const translateValue =
-        this.carouselElementWidth * this.itemsPerPage[pageIndex];
-
-      this.translateValue =
-        pageIndex > this.currentPageIndex
-          ? this.translateValue - translateValue
-          : this.lastTranslateValue;
-
-      this.currentPageIndex = pageIndex;
+    if (this.currentPageIndex === pageIndex) {
+      return;
     }
+
+    if (pageIndex > this.currentPageIndex) {
+      this.translateValue = -(
+        this.carouselElementWidth * this.itemsPerPage[pageIndex] +
+        (pageIndex - 1) * this.itemsPerView * this.carouselElementWidth
+      );
+    } else {
+      this.translateValue = -(
+        this.carouselElementWidth *
+        this.itemsPerView *
+        pageIndex
+      );
+    }
+
+    this.currentPageIndex = pageIndex;
   }
 
   private mounted() {
