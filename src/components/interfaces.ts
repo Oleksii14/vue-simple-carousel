@@ -5,6 +5,6 @@ export interface IDotsData {
     size?: number;
     color?: string;
     border?: string;
-    spacing: number;
+    spacing?: number;
   };
 }
