@@ -76,9 +76,7 @@
             'carousel__dot--active': currentPageIndex === idx
           }"
           @click="goToPage(idx)"
-        >
-          {{ idx }}
-        </button>
+        />
       </div>
     </template>
   </div>
