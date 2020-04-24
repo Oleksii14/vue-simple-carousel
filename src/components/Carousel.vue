@@ -7,29 +7,27 @@
     }"
   >
     <template v-if="enableButtons">
-      <template>
-        <slot name="customButtons" />
-      </template>
+      <button class="carousel__button carousel__button--prev" @click="prev">
+        <slot v-if="$slots.prevButton" name="prevButton" />
+        <span v-else>&#60;</span>
+      </button>
 
-      <div v-if="!$slots.customButtons" class="carousel__buttons">
-        <button class="carousel__button" @click="prev">
-          <slot v-if="$slots.prevButton" name="prevButton" />
-          <span v-else>&#60;</span>
-        </button>
-
-        <button class="carousel__button" @click="next">
-          <slot v-if="$slots.nextButton" name="nextButton" />
-          <span v-else>&#62;</span>
-        </button>
-      </div>
+      <button class="carousel__button carousel__button--next" @click="next">
+        <slot v-if="$slots.nextButton" name="nextButton" />
+        <span v-else>&#62;</span>
+      </button>
     </template>
 
     <div
+      v-touch:swipe.left="onDragNext"
+      v-touch:swipe.right="onDragPrev"
+      v-touch-options="touchOptions"
       class="carousel__track"
       :style="{
         width: `${trackWidth}px`,
         transform: `translateX(${translateValue}px)`,
-        transition: `transform ${speed / 10000}s`
+        transition: `transform ${speed / 10000}s`,
+        cursor: draggable ? 'grab' : 'default'
       }"
     >
       <div
@@ -64,8 +62,6 @@
           :style="{
             width: `${dotsData.dots.size}px`,
             height: `${dotsData.dots.size}px`,
-            backgroundColor: dotsData.dots.color,
-            border: dotsData.dots.border,
             marginRight:
               idx === $slots.default.length - 1
                 ? 0
@@ -101,21 +97,24 @@
 
   &__element {
     flex: 1;
+    user-select: none;
   }
 
-  &__buttons {
-    display: flex;
-    justify-content: space-between;
-
+  &__button {
     position: absolute;
     top: 50%;
-    left: 0;
+
+    z-index: 2;
 
     transform: translateY(-50%);
 
-    width: 100%;
+    &--next {
+      right: 0;
+    }
 
-    z-index: 2;
+    &--prev {
+      left: 0;
+    }
   }
 
   &__dots {
@@ -150,6 +149,10 @@ import { RenderContext, CreateElement } from "vue";
 import { IDotsData } from "./interfaces";
 import { DEFAULT_DOTS_DATA } from "./helpers";
 
+import Vue2TouchEvents, { Vue2TouchEventsOptions } from "vue2-touch-events";
+
+Vue.use(Vue2TouchEvents);
+
 @Component({
   components: {
     PassedNode: {
@@ -177,6 +180,9 @@ export default class Carousel extends Vue {
   @Prop({ default: false, type: Boolean })
   private navigateBySlide!: boolean;
 
+  @Prop({ default: true, type: Boolean })
+  private draggable!: boolean;
+
   @Prop({ default: 0, type: Number })
   private initialSlideIndex!: number;
 
@@ -189,8 +195,11 @@ export default class Carousel extends Vue {
   @Prop({ default: () => DEFAULT_DOTS_DATA, type: Object })
   private dotsData!: IDotsData;
 
+  @Prop({ default: () => ({ swipeTolerance: 80 }), type: Object })
+  private touchOptions!: Vue2TouchEventsOptions;
+
   private translateValue = 0;
-  private lastTranslateValue = 0;
+
   private trackWidth = 0;
   private carouselElementWidth = 0;
 
@@ -227,6 +236,10 @@ export default class Carousel extends Vue {
     }
 
     return itemsPerPage;
+  }
+
+  private get carouselWidth() {
+    return this.$refs.carousel.offsetWidth;
   }
 
   private goToBeginning() {
@@ -289,7 +302,7 @@ export default class Carousel extends Vue {
   }
 
   private setCarouselSizingSettings() {
-    const carouselWidth = this.$refs.carousel.offsetWidth;
+    const carouselWidth = this.carouselWidth;
 
     this.carouselElementWidth = carouselWidth / this.itemsPerView;
     this.trackWidth = this.carouselElementWidth * this.itemsCount;
@@ -322,6 +335,18 @@ export default class Carousel extends Vue {
     }
 
     this.currentPageIndex = pageIndex;
+  }
+
+  private onDragNext() {
+    if (this.draggable) {
+      this.next();
+    }
+  }
+
+  private onDragPrev() {
+    if (this.draggable) {
+      this.prev();
+    }
   }
 
   private mounted() {

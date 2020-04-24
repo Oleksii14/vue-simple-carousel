@@ -3,8 +3,6 @@ export interface IDotsData {
   padding?: string;
   dots?: {
     size?: number;
-    color?: string;
-    border?: string;
     spacing?: number;
   };
 }
