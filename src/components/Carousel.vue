@@ -172,9 +172,6 @@ export default class Carousel extends Vue {
   private enableDots!: boolean;
 
   @Prop({ default: false, type: Boolean })
-  private separateButtons!: boolean;
-
-  @Prop({ default: false, type: Boolean })
   private goBackOnEnd!: boolean;
 
   @Prop({ default: false, type: Boolean })
@@ -182,9 +179,6 @@ export default class Carousel extends Vue {
 
   @Prop({ default: true, type: Boolean })
   private draggable!: boolean;
-
-  @Prop({ default: 0, type: Number })
-  private initialSlideIndex!: number;
 
   @Prop({ default: 3000, type: Number })
   private speed!: number;
@@ -203,7 +197,7 @@ export default class Carousel extends Vue {
   private trackWidth = 0;
   private carouselElementWidth = 0;
 
-  private currentSlideIndex = this.initialSlideIndex;
+  private currentSlideIndex = 0;
   private currentPageIndex = 0;
 
   public $refs!: {
@@ -302,10 +296,16 @@ export default class Carousel extends Vue {
   }
 
   private setCarouselSizingSettings() {
-    const carouselWidth = this.carouselWidth;
+    const carouselWidth = this.$refs.carousel.offsetWidth;
+    const elementsTranslated =
+      this.translateValue / this.carouselElementWidth || 0;
 
     this.carouselElementWidth = carouselWidth / this.itemsPerView;
     this.trackWidth = this.carouselElementWidth * this.itemsCount;
+
+    const translateValue = elementsTranslated * this.carouselElementWidth;
+    this.translateValue =
+      this.translateValue < 0 ? translateValue : -translateValue;
   }
 
   private goToPage(pageIndex: number) {

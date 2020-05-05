@@ -1,5 +1,3 @@
-import { Vue2TouchEventsOptions } from "vue2-touch-events";
-
 export const DEFAULT_DOTS_DATA = {
   margin: "10px 0 0 0",
   padding: "0",
