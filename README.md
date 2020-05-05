@@ -133,6 +133,56 @@ export default {
 }
 ```
 
+## Useful methods
+
+`prev` - navigates to the prev page/slide (this relates to `navigate-by-slide` prop)
+
+`next` - navigates to the next page/slide (this relates to `navigate-by-slide` prop)
+
+`onNextBySlide` - navigates to the next slide
+
+`onNextByPage` - navigates to the next page
+
+`onPrevBySlide` - navigates to the prev slide
+
+`onPrevByPage` - navigates to the prev page
+
+*Example*:
+
+```
+<button
+    class="some-button-that-should-navigate-next" @click="$refs.carousel.onNextBySlide()"
+>
+    CLICK ME TO GO TO THE NEXT SLIDE
+</button>
+```
+
+## Useful data
+
+`translateValue` - value on which the carousel is translated now
+
+`trackWidth` - the width of the carousel track (changes on resize event)
+
+`carouselElementWidth` - the width of the carousel element (changes on resize event)
+
+`currentSlideIndex` / `currentPageIndex` - current indexes
+
+`itemsCount` - the number of all passed nodes
+
+`pages` - number of pages
+
+`maximumSlideIndex` - the maximum index the carousel can be moved
+
+`itemsPerPage` - the number of carousel items per page
+
+*Example*:
+
+```
+mounted() {
+    console.log(this.$refs.carousel.pages)
+}
+```
+
 Noticed a bug? Please report - https://github.com/Oleksii14/vue2-simple-carousel/issues
 
 Happy using!

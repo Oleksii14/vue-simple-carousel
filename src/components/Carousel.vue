@@ -232,10 +232,6 @@ export default class Carousel extends Vue {
     return itemsPerPage;
   }
 
-  private get carouselWidth() {
-    return this.$refs.carousel.offsetWidth;
-  }
-
   private goToBeginning() {
     this.currentPageIndex = 0;
     this.currentSlideIndex = 0;
