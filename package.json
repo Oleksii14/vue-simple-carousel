@@ -7,6 +7,24 @@
   "browser": {
     "./sfc": "src/Carousel.vue"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Oleksii14/vue2-simple-carousel.git"
+  },
+  "keywords": [
+    "vue2",
+    "vue",
+    "vuejs",
+    "carousel",
+    "simple",
+    "simple-carousel"
+  ],
+  "author": "Oleksii Shaposhnikov <oshap1044@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Oleksii14/vue2-simple-carousel/issues"
+  },
+  "homepage": "https://github.com/Oleksii14/vue2-simple-carousel",
   "scripts": {
     "serve": "vue-cli-service serve",
     "lint": "vue-cli-service lint",
