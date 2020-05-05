@@ -34,7 +34,6 @@
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife --file dist/vuesimplecarousel.min.js"
   },
   "dependencies": {
-    "core-js": "^3.6.4",
     "vue": "^2.6.11",
     "vue2-touch-events": "^2.2.1"
   },
