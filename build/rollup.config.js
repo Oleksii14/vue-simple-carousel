@@ -3,6 +3,10 @@ import buble from "rollup-plugin-buble";
 import commonjs from "rollup-plugin-commonjs";
 import replace from "rollup-plugin-replace";
 import typescript from "rollup-plugin-typescript";
+import minimist from "minimist";
+import uglify from "rollup-plugin-uglify-es";
+
+const argv = minimist(process.argv.slice(2));
 
 const config = {
   input: "src/entry.js",
@@ -35,5 +39,9 @@ const config = {
     buble()
   ]
 };
+
+if (argv.format === "iife") {
+  config.plugins.push(uglify());
+}
 
 export default config;
