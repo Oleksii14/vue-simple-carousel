@@ -179,7 +179,7 @@ export default {
 
 ```
 mounted() {
-    console.log(this.$refs.carousel.pages);
+    console.log(this.$refs.carousel.pages)
 }
 ```
 
