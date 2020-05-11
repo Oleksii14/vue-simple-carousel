@@ -1,6 +1,6 @@
 {
   "name": "vue2-simple-carousel",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "dist/vuesimplecarousel.umd.js",
   "module": "dist/vuesimplecarousel.esm.js",
   "unpkg": "dist/vuesimplecarousel.min.js",
@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/Oleksii14/vue2-simple-carousel/issues"
   },
-  "homepage": "https://github.com/Oleksii14/vue2-simple-carousel",
+  "homepage": "https://github.com/Oleksii14/vue2-simple-carousel#readme",
   "scripts": {
     "serve": "vue-cli-service serve",
     "lint": "vue-cli-service lint",
