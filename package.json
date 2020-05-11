@@ -1,6 +1,6 @@
 {
   "name": "vue2-simple-carousel",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "main": "dist/vuesimplecarousel.umd.js",
   "module": "dist/vuesimplecarousel.esm.js",
   "unpkg": "dist/vuesimplecarousel.min.js",
@@ -17,7 +17,8 @@
     "vuejs",
     "carousel",
     "simple",
-    "simple-carousel"
+    "slider",
+    "swiper"
   ],
   "author": "Oleksii Shaposhnikov <oshap1044@gmail.com>",
   "license": "MIT",
