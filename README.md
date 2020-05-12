@@ -184,5 +184,6 @@ mounted() {
 ```
 
 Noticed a bug? Please report - https://github.com/Oleksii14/vue2-simple-carousel/issues
+Liked a carousel? Become a patron https://www.patreon.com/oshap
 
 Happy using!
