@@ -11,7 +11,7 @@ const argv = minimist(process.argv.slice(2));
 const config = {
   input: "src/entry.js",
   output: {
-    name: "VueSimpleCarousel",
+    name: "Vue2SimpleCarousel",
     exports: "named",
     globals: {
       "vue-property-decorator": "vuePropertyDecorator",

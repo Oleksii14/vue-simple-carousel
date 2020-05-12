@@ -350,5 +350,9 @@ export default class Carousel extends Vue {
 
     window.addEventListener("resize", this.setCarouselSizingSettings);
   }
+
+  private destroyed() {
+    window.removeEventListener("resize", this.setCarouselSizingSettings);
+  }
 }
 </script>

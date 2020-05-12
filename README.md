@@ -1,4 +1,4 @@
-# Vue2 simple carousel 🤡
+# vue2-simple-carousel 🎠
 #### It is:
 1. Simple to use
 2. Touch-friendly
@@ -6,7 +6,7 @@
 4. Fully customizable
 5. Made with all common modes
 
-## Installation
+## Installation 💽
 
 #### npm
 ```
@@ -18,32 +18,32 @@ npm i vue2-simple-carousel
 yarn add vue2-simple-carousel
 ```
 
-## Basic usage
+## Basic usage 🏄
 
 ```
 // <script>
-import SimpleCarousel from "vue2-simple-carousel";
+import Carousel from "vue2-simple-carousel";
 
 export default {
     ...
     components: {
-        SimpleCarousel
+        Carousel
     }
 }
 
 // <template>
 
-<SimpleCarousel>
+<Carousel>
     <div>1</div>
     <div>2</div>
     <div>3</div>
     <div>4</div>
     <div>5</div>
     <div>6</div>
-</SimpleCarousel>
+</Carousel>
 ```
 
-## Props
+## Props 💡
 
 |Name|Type|Default|Description|
 |-------------|-------------|-----|-----|
@@ -76,31 +76,31 @@ export default {
 }
 ```
 
-## Slots
+## Slots 🧭
 `prevButton`, `nextButton`, `customDots`
 
-## Examples with slots
+## Examples with slots 🖼
 
-### prevButton, nextButton
+#### prevButton, nextButton
 
 ```
-<SimpleCarousel ref="carousel">
+<Carousel ref="carousel">
     <!-- Those spans will be wrapped in <button> tags, so don't worry about accessibility 😉  -->
     <span slot="prevButton">Click to go back!</span>
     <span slot="nextButton">Click to go next!</span>
     <div>1</div>
     <div>2</div>
     <div>3</div>
-</SimpleCarousel>
+</Carousel>
 ```
 
-### customDots
+#### customDots
 
 This slot is needed when you want to provide fully custom dots and avoid global styling:
 
 *template*: 
 ```
-<SimpleCarousel ref="carousel">
+<Carousel ref="carousel">
     <div>1</div>
     <div>2</div>
     <div>3</div>
@@ -110,7 +110,7 @@ This slot is needed when you want to provide fully custom dots and avoid global 
             {{ dot }}
         </button>
     </div>
-</SimpleCarousel>
+</Carousel>
 ```
 
 *script*:
@@ -133,7 +133,7 @@ export default {
 }
 ```
 
-## Useful methods
+## Useful methods 📖
 
 `prev` - navigates to the prev page/slide (this relates to `navigate-by-slide` prop)
 
@@ -157,7 +157,7 @@ export default {
 </button>
 ```
 
-## Useful data
+## Useful data 📖
 
 `translateValue` - value on which the carousel is translated now
 

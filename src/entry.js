@@ -1,9 +1,9 @@
-import VueSimpleCarousel from "./components/Carousel.vue";
+import Vue2SimpleCarousel from "./components/Carousel.vue";
 
 function install(Vue) {
   if (!install.installed) {
     install.installed = true;
-    Vue.component("VueSimpleCarousel", VueSimpleCarousel);
+    Vue.component("Vue2SimpleCarousel", Vue2SimpleCarousel);
   }
 }
 
@@ -23,5 +23,5 @@ if (GlobalVue) {
   GlobalVue.use(plugin);
 }
 
-VueSimpleCarousel.install = install;
-export default VueSimpleCarousel;
+Vue2SimpleCarousel.install = install;
+export default Vue2SimpleCarousel;
