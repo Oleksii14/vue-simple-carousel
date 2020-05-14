@@ -98,6 +98,10 @@
   &__element {
     flex: 1;
     user-select: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__button {
