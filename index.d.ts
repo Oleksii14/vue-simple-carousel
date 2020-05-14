@@ -1,4 +1,5 @@
 import { Vue2TouchEventsOptions } from "vue2-touch-events";
+import { ComponentOptions } from "vue/types/umd";
 
 export interface DotsData {
   margin?: string;
@@ -35,5 +36,5 @@ export interface Carousel {
   goToPage: (pageIdx: number) => void;
 }
 
-declare const Vue2SimpleCarousel: Carousel;
+declare const Vue2SimpleCarousel: ComponentOptions<Vue>;
 export default Vue2SimpleCarousel;
