@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue-property-decorator'), require('vue2-touch-events')) :
     typeof define === 'function' && define.amd ? define(['exports', 'vue-property-decorator', 'vue2-touch-events'], factory) :
-    (global = global || self, factory(global.VueSimpleCarousel = {}, global.vuePropertyDecorator, global.Vue2TouchEvents));
+    (global = global || self, factory(global.Vue2SimpleCarousel = {}, global.vuePropertyDecorator, global.Vue2TouchEvents));
 }(this, (function (exports, vuePropertyDecorator, Vue2TouchEvents) { 'use strict';
 
     Vue2TouchEvents = Vue2TouchEvents && Object.prototype.hasOwnProperty.call(Vue2TouchEvents, 'default') ? Vue2TouchEvents['default'] : Vue2TouchEvents;
@@ -190,6 +190,9 @@
         Carousel.prototype.mounted = function () {
             this.setCarouselSizingSettings();
             window.addEventListener("resize", this.setCarouselSizingSettings);
+        };
+        Carousel.prototype.destroyed = function () {
+            window.removeEventListener("resize", this.setCarouselSizingSettings);
         };
         __decorate([
             vuePropertyDecorator.Prop({ default: false, type: Boolean })
@@ -401,11 +404,11 @@
       /* style */
       var __vue_inject_styles__ = function (inject) {
         if (!inject) { return }
-        inject("data-v-618c875c_0", { source: ".carousel[data-v-618c875c]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-618c875c]{display:flex;flex:1}.carousel__element[data-v-618c875c]{flex:1;user-select:none}.carousel__button[data-v-618c875c]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-618c875c]{right:0}.carousel__button--prev[data-v-618c875c]{left:0}.carousel__dots[data-v-618c875c]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-618c875c]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-618c875c]{opacity:.7}.carousel__dot[data-v-618c875c]:hover{opacity:.8}", map: undefined, media: undefined });
+        inject("data-v-22460f7a_0", { source: ".carousel[data-v-22460f7a]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-22460f7a]{display:flex;flex:1}.carousel__element[data-v-22460f7a]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-22460f7a]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-22460f7a]{right:0}.carousel__button--prev[data-v-22460f7a]{left:0}.carousel__dots[data-v-22460f7a]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-22460f7a]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-22460f7a]{opacity:.7}.carousel__dot[data-v-22460f7a]:hover{opacity:.8}", map: undefined, media: undefined });
 
       };
       /* scoped */
-      var __vue_scope_id__ = "data-v-618c875c";
+      var __vue_scope_id__ = "data-v-22460f7a";
       /* module identifier */
       var __vue_module_identifier__ = undefined;
       /* functional template */
@@ -414,7 +417,7 @@
       
 
       
-      var VueSimpleCarousel = normalizeComponent_1(
+      var Vue2SimpleCarousel = normalizeComponent_1(
         { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
         __vue_inject_styles__,
         __vue_script__,
@@ -428,7 +431,7 @@
     function install(Vue) {
       if (!install.installed) {
         install.installed = true;
-        Vue.component("VueSimpleCarousel", VueSimpleCarousel);
+        Vue.component("Vue2SimpleCarousel", Vue2SimpleCarousel);
       }
     }
 
@@ -448,9 +451,9 @@
       GlobalVue.use(plugin);
     }
 
-    VueSimpleCarousel.install = install;
+    Vue2SimpleCarousel.install = install;
 
-    exports.default = VueSimpleCarousel;
+    exports.default = Vue2SimpleCarousel;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
