@@ -1,10 +1,23 @@
 # vue2-simple-carousel 🎠
+
+Noticed a bug? Please report - https://github.com/Oleksii14/vue2-simple-carousel/issues
+Liked a carousel? Become a patron https://www.patreon.com/join/oshap
+
 #### It is:
 1. Simple to use
 2. Touch-friendly
 3. Responsive
 4. Fully customizable
 5. Made with all common modes
+
+## Table of contents
+1. [Installation](#installation)
+2. [Basic usage](#basic-usage)
+3. [Props](#props)
+4. [Slots](#slots)
+5. [Examples with slots](#examples-with-slots)
+6. [Useful methods](#useful-methods)
+7. [Useful data](#useful-data)
 
 ## Installation 💽
 
@@ -182,9 +195,5 @@ mounted() {
     console.log(this.$refs.carousel.pages)
 }
 ```
-
-Noticed a bug? Please report - https://github.com/Oleksii14/vue2-simple-carousel/issues
-
-Liked a carousel? Become a patron https://www.patreon.com/join/oshap
 
 Happy using!
