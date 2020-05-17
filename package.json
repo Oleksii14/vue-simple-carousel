@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/Oleksii14/vue2-simple-carousel#readme",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "lint": "vue-cli-service lint",
     "build": "npm run build:unpkg & npm run build:es & npm run build:umd",
     "build:umd": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format umd --file dist/vuesimplecarousel.umd.js",
