@@ -73,7 +73,7 @@ export default {
 |autoplay-timeout|Number|1500|Sets the autoplay timeout time
 |items-per-view|Number|3|Sets the number of items per *page* (view)
 |dots-data|Object|`dotsDataObject`|Sets the number of items per *page* (view)
-|touchOptions|Object|`touchOptionsObject`|Sets the number of items per *page* (view)
+|touch-options|Object|`touchOptionsObject`|Sets the number of items per *page* (view)
 
 `touchOptionsObject`:
 ```
