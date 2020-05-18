@@ -256,7 +256,9 @@ export default class Carousel extends Vue {
   }
 
   private next(autoplay?: true) {
-    this.navigateBySlide ? this.onNextBySlide(autoplay) : this.onNextByPage(autoplay);
+    this.navigateBySlide
+      ? this.onNextBySlide(autoplay)
+      : this.onNextByPage(autoplay);
   }
 
   private onNextBySlide(autoplay?: true) {
