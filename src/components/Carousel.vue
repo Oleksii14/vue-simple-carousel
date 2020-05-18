@@ -29,6 +29,8 @@
         transition: `transform ${speed / 10000}s`,
         cursor: draggable ? 'grab' : 'default'
       }"
+      @mouseenter="stopAutoplay"
+      @mouseleave="startAutoplay"
     >
       <div
         v-for="(element, idx) in $slots.default"
@@ -169,6 +171,12 @@ export default class Carousel extends Vue {
   @Prop({ default: false, type: Boolean })
   private autoHeight!: boolean;
 
+  @Prop({ default: false, type: Boolean })
+  private autoplay!: boolean;
+
+  @Prop({ default: true, type: Boolean })
+  private stopAutoplayHover!: boolean;
+
   @Prop({ default: true, type: Boolean })
   private enableButtons!: boolean;
 
@@ -187,6 +195,9 @@ export default class Carousel extends Vue {
   @Prop({ default: 3000, type: Number })
   private speed!: number;
 
+  @Prop({ default: 1500, type: Number })
+  private autoplayTimeout!: number;
+
   @Prop({ default: 3, type: Number })
   private itemsPerView!: number;
 
@@ -203,6 +214,8 @@ export default class Carousel extends Vue {
 
   private currentSlideIndex = 0;
   private currentPageIndex = 0;
+
+  private autoplayIntervalId = 0;
 
   public $refs!: {
     carouselElement: HTMLDivElement | HTMLDivElement[];
@@ -242,11 +255,11 @@ export default class Carousel extends Vue {
     this.translateValue = 0;
   }
 
-  private next() {
-    this.navigateBySlide ? this.onNextBySlide() : this.onNextByPage();
+  private next(autoplay?: true) {
+    this.navigateBySlide ? this.onNextBySlide(autoplay) : this.onNextByPage(autoplay);
   }
 
-  private onNextBySlide() {
+  private onNextBySlide(autoplay?: true) {
     if (this.currentSlideIndex < this.maximumSlideIndex) {
       this.currentSlideIndex++;
       this.translateValue = this.translateValue - this.carouselElementWidth;
@@ -258,17 +271,17 @@ export default class Carousel extends Vue {
         this.currentPageIndex++;
       }
     } else {
-      if (this.goBackOnEnd) {
+      if (this.goBackOnEnd || autoplay) {
         this.goToBeginning();
       }
     }
   }
 
-  private onNextByPage() {
+  private onNextByPage(autoplay?: true) {
     if (this.currentPageIndex < this.pages - 1) {
       this.goToPage(this.currentPageIndex + 1);
     } else {
-      if (this.goBackOnEnd) {
+      if (this.goBackOnEnd || autoplay) {
         this.goToBeginning();
       }
     }
@@ -349,13 +362,30 @@ export default class Carousel extends Vue {
     }
   }
 
+  private stopAutoplay() {
+    if (this.stopAutoplayHover) {
+      clearInterval(this.autoplayIntervalId);
+    }
+  }
+
+  private startAutoplay() {
+    if (this.autoplay) {
+      this.autoplayIntervalId = setInterval(() => {
+        this.next(true);
+      }, this.autoplayTimeout);
+    }
+  }
+
   private mounted() {
     this.setCarouselSizingSettings();
 
     window.addEventListener("resize", this.setCarouselSizingSettings);
+
+    this.startAutoplay();
   }
 
   private destroyed() {
+    clearInterval(this.autoplayIntervalId);
     window.removeEventListener("resize", this.setCarouselSizingSettings);
   }
 }

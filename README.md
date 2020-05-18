@@ -64,10 +64,13 @@ export default {
 |auto-height|Boolean|false|Sets the `auto-height` css prop to wrapper
 |enable-buttons|Boolean|true|Enables carousel buttons
 |enable-dots|Boolean|false|Enables carousel dots
+|autoplay|Boolean|false|Enables autoplay
+|stop-autoplay-hover|Boolean|true|Stops the autoplay on carousel hover
 |go-back-on-end|Boolean|false|Moves carousel to the 1st slide after you reached the last slide
 |navigate-by-slide|Boolean|false|Navigates carousel by slide. (Carousel navigates by *page* by default)
 |draggable|Boolean|true|Enables carousel navigation by dragging
 |speed|Number|3000|Sets the `transition` speed while navigate
+|autoplay-timeout|Number|1500|Sets the autoplay timeout time
 |items-per-view|Number|3|Sets the number of items per *page* (view)
 |dots-data|Object|`dotsDataObject`|Sets the number of items per *page* (view)
 |touchOptions|Object|`touchOptionsObject`|Sets the number of items per *page* (view)
