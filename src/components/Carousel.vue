@@ -149,7 +149,7 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { RenderContext, CreateElement } from "vue";
 
 import { IDotsData } from "./interfaces";
@@ -389,6 +389,16 @@ export default class Carousel extends Vue {
   private destroyed() {
     clearInterval(this.autoplayIntervalId);
     window.removeEventListener("resize", this.setCarouselSizingSettings);
+  }
+
+  @Watch("currentSlideIndex")
+  private onSlideChanged(value: number) {
+    this.$emit("on-slide-change", value);
+  }
+
+  @Watch("currentPageIndex")
+  private onPageChanged(value: number) {
+    this.$emit("on-page-change", value);
   }
 }
 </script>

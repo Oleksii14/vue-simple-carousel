@@ -93,6 +93,30 @@ export default {
 }
 ```
 
+## Events 😎
+`on-slide-change`, `on-page-change`
+
+#### Examples
+
+```
+<Carousel
+    navigate-by-slide
+    @on-slide-change="customSlideChangeHandle"
+>
+    ...
+</Carousel>
+```
+
+or if you navigate by page:
+
+```
+<Carousel
+    @on-page-change="customPageChangeHandle"
+>
+    ...
+</Carousel>
+```
+
 ## Slots 🧭
 `prevButton`, `nextButton`, `customDots`
 
