@@ -61,6 +61,7 @@
             _this.carouselElementWidth = 0;
             _this.currentSlideIndex = 0;
             _this.currentPageIndex = 0;
+            _this.autoplayIntervalId = 0;
             return _this;
         }
         Object.defineProperty(Carousel.prototype, "itemsCount", {
@@ -102,10 +103,12 @@
             this.currentSlideIndex = 0;
             this.translateValue = 0;
         };
-        Carousel.prototype.next = function () {
-            this.navigateBySlide ? this.onNextBySlide() : this.onNextByPage();
+        Carousel.prototype.next = function (autoplay) {
+            this.navigateBySlide
+                ? this.onNextBySlide(autoplay)
+                : this.onNextByPage(autoplay);
         };
-        Carousel.prototype.onNextBySlide = function () {
+        Carousel.prototype.onNextBySlide = function (autoplay) {
             if (this.currentSlideIndex < this.maximumSlideIndex) {
                 this.currentSlideIndex++;
                 this.translateValue = this.translateValue - this.carouselElementWidth;
@@ -115,17 +118,17 @@
                 }
             }
             else {
-                if (this.goBackOnEnd) {
+                if (this.goBackOnEnd || autoplay) {
                     this.goToBeginning();
                 }
             }
         };
-        Carousel.prototype.onNextByPage = function () {
+        Carousel.prototype.onNextByPage = function (autoplay) {
             if (this.currentPageIndex < this.pages - 1) {
                 this.goToPage(this.currentPageIndex + 1);
             }
             else {
-                if (this.goBackOnEnd) {
+                if (this.goBackOnEnd || autoplay) {
                     this.goToBeginning();
                 }
             }
@@ -187,16 +190,37 @@
                 this.prev();
             }
         };
+        Carousel.prototype.stopAutoplay = function () {
+            if (this.stopAutoplayHover) {
+                clearInterval(this.autoplayIntervalId);
+            }
+        };
+        Carousel.prototype.startAutoplay = function () {
+            var _this = this;
+            if (this.autoplay) {
+                this.autoplayIntervalId = setInterval(function () {
+                    _this.next(true);
+                }, this.autoplayTimeout);
+            }
+        };
         Carousel.prototype.mounted = function () {
             this.setCarouselSizingSettings();
             window.addEventListener("resize", this.setCarouselSizingSettings);
+            this.startAutoplay();
         };
         Carousel.prototype.destroyed = function () {
+            clearInterval(this.autoplayIntervalId);
             window.removeEventListener("resize", this.setCarouselSizingSettings);
         };
         __decorate([
             vuePropertyDecorator.Prop({ default: false, type: Boolean })
         ], Carousel.prototype, "autoHeight", void 0);
+        __decorate([
+            vuePropertyDecorator.Prop({ default: false, type: Boolean })
+        ], Carousel.prototype, "autoplay", void 0);
+        __decorate([
+            vuePropertyDecorator.Prop({ default: true, type: Boolean })
+        ], Carousel.prototype, "stopAutoplayHover", void 0);
         __decorate([
             vuePropertyDecorator.Prop({ default: true, type: Boolean })
         ], Carousel.prototype, "enableButtons", void 0);
@@ -215,6 +239,9 @@
         __decorate([
             vuePropertyDecorator.Prop({ default: 3000, type: Number })
         ], Carousel.prototype, "speed", void 0);
+        __decorate([
+            vuePropertyDecorator.Prop({ default: 1500, type: Number })
+        ], Carousel.prototype, "autoplayTimeout", void 0);
         __decorate([
             vuePropertyDecorator.Prop({ default: 3, type: Number })
         ], Carousel.prototype, "itemsPerView", void 0);
@@ -383,7 +410,7 @@
           transform: ("translateX(" + _vm.translateValue + "px)"),
           transition: ("transform " + (_vm.speed / 10000) + "s"),
           cursor: _vm.draggable ? 'grab' : 'default'
-        })},_vm._l((_vm.$slots.default),function(element,idx){return _c('div',{key:((element.tag) + "-" + idx),ref:"carouselElement",refInFor:true,staticClass:"carousel__element",style:({
+        }),on:{"mouseenter":_vm.stopAutoplay,"mouseleave":_vm.startAutoplay}},_vm._l((_vm.$slots.default),function(element,idx){return _c('div',{key:((element.tag) + "-" + idx),ref:"carouselElement",refInFor:true,staticClass:"carousel__element",style:({
             width: (_vm.carouselElementWidth + "px")
           })},[_c('PassedNode',{attrs:{"nodes":element}})],1)}),0),_vm._v(" "),(_vm.enableDots)?[[_vm._t("customDots")],_vm._v(" "),(!_vm.$slots.customDots)?_c('div',{staticClass:"carousel__dots",style:({
             margin: _vm.dotsData.margin,
@@ -404,11 +431,11 @@
       /* style */
       var __vue_inject_styles__ = function (inject) {
         if (!inject) { return }
-        inject("data-v-22460f7a_0", { source: ".carousel[data-v-22460f7a]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-22460f7a]{display:flex;flex:1}.carousel__element[data-v-22460f7a]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-22460f7a]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-22460f7a]{right:0}.carousel__button--prev[data-v-22460f7a]{left:0}.carousel__dots[data-v-22460f7a]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-22460f7a]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-22460f7a]{opacity:.7}.carousel__dot[data-v-22460f7a]:hover{opacity:.8}", map: undefined, media: undefined });
+        inject("data-v-60953855_0", { source: ".carousel[data-v-60953855]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-60953855]{display:flex;flex:1}.carousel__element[data-v-60953855]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-60953855]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-60953855]{right:0}.carousel__button--prev[data-v-60953855]{left:0}.carousel__dots[data-v-60953855]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-60953855]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-60953855]{opacity:.7}.carousel__dot[data-v-60953855]:hover{opacity:.8}", map: undefined, media: undefined });
 
       };
       /* scoped */
-      var __vue_scope_id__ = "data-v-22460f7a";
+      var __vue_scope_id__ = "data-v-60953855";
       /* module identifier */
       var __vue_module_identifier__ = undefined;
       /* functional template */
