@@ -2,8 +2,6 @@
 
 Noticed a bug? Please report - https://github.com/Oleksii14/vue2-simple-carousel/issues
 
-Liked a carousel? Become a patron https://www.patreon.com/join/oshap
-
 #### It is:
 1. Simple to use
 2. Touch-friendly
