@@ -1,8 +1,8 @@
 <template>
   <div class="carousel-wrapper">
-    <template v-if="disabled">
+    <div v-if="disabled" class="carousel__disable-wrapper">
       <slot />
-    </template>
+    </div>
 
     <div
       v-else
