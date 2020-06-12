@@ -67,6 +67,7 @@ export default {
 |go-back-on-end|Boolean|false|Moves carousel to the 1st slide after you reached the last slide
 |navigate-by-slide|Boolean|false|Navigates carousel by slide. (Carousel navigates by *page* by default)
 |draggable|Boolean|true|Enables carousel navigation by dragging
+|manual-initialize|Boolean|false|Disables the carousel (it will show just the items you passed)
 |speed|Number|3000|Sets the `transition` speed while navigate
 |autoplay-timeout|Number|1500|Sets the autoplay timeout time
 |items-per-view|Number|3|Sets the number of items per *page* (view)
@@ -91,7 +92,7 @@ export default {
 }
 ```
 
-## Events 😎
+## Emited events 😎
 `on-slide-change`, `on-page-change`
 
 #### Examples
@@ -186,13 +187,28 @@ export default {
 
 `onPrevByPage` - navigates to the prev page
 
-*Example*:
+`initialize` - initializes a carousel if it is disabled (if you passed `manual-initialize` prop as `true`)
+
+*Common example*:
 
 ```
 <button
     class="some-button-that-should-navigate-next" @click="$refs.carousel.onNextBySlide()"
 >
     CLICK ME TO GO TO THE NEXT SLIDE
+</button>
+```
+
+*Example with initializing*:
+```
+<Carousel manual-initialize>
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+</Carousel>
+
+<button @click="$refs.carousel.initialize()">
+    Initialize a carousel
 </button>
 ```
 
@@ -213,6 +229,8 @@ export default {
 `maximumSlideIndex` - the maximum index the carousel can be moved
 
 `itemsPerPage` - the number of carousel items per page
+
+`disabled` - the disabled state of the carousel
 
 *Example*:
 

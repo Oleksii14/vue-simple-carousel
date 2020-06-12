@@ -34,6 +34,7 @@ export interface Carousel {
   onPrevByPage: () => void;
   setCarouselSizingSettings: () => void;
   goToPage: (pageIdx: number) => void;
+  initialize: () => void;
 }
 
 declare const Vue2SimpleCarousel: ComponentOptions<Vue>;

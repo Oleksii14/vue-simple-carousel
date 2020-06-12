@@ -62,6 +62,7 @@
             _this.currentSlideIndex = 0;
             _this.currentPageIndex = 0;
             _this.autoplayIntervalId = 0;
+            _this.disabled = _this.manualInitialize;
             return _this;
         }
         Object.defineProperty(Carousel.prototype, "itemsCount", {
@@ -203,10 +204,19 @@
                 }, this.autoplayTimeout);
             }
         };
-        Carousel.prototype.mounted = function () {
-            this.setCarouselSizingSettings();
-            window.addEventListener("resize", this.setCarouselSizingSettings);
+        Carousel.prototype.initialize = function () {
+            var _this = this;
+            this.disabled = false;
             this.startAutoplay();
+            window.addEventListener("resize", this.setCarouselSizingSettings);
+            this.$nextTick(function () {
+                _this.setCarouselSizingSettings();
+            });
+        };
+        Carousel.prototype.mounted = function () {
+            if (!this.manualInitialize) {
+                this.initialize();
+            }
         };
         Carousel.prototype.destroyed = function () {
             clearInterval(this.autoplayIntervalId);
@@ -224,6 +234,9 @@
         __decorate([
             vuePropertyDecorator.Prop({ default: false, type: Boolean })
         ], Carousel.prototype, "autoplay", void 0);
+        __decorate([
+            vuePropertyDecorator.Prop({ default: false, type: Boolean })
+        ], Carousel.prototype, "manualInitialize", void 0);
         __decorate([
             vuePropertyDecorator.Prop({ default: true, type: Boolean })
         ], Carousel.prototype, "stopAutoplayHover", void 0);
@@ -415,39 +428,39 @@
     var __vue_script__ = Carousel;
 
     /* template */
-    var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"carousel",staticClass:"carousel",style:({
-        height: _vm.autoHeight ? 'auto' : '100%'
-      })},[(_vm.enableButtons)?[_c('button',{staticClass:"carousel__button carousel__button--prev",on:{"click":_vm.prev}},[(_vm.$slots.prevButton)?_vm._t("prevButton"):_c('span',[_vm._v("<")])],2),_vm._v(" "),_c('button',{staticClass:"carousel__button carousel__button--next",on:{"click":_vm.next}},[(_vm.$slots.nextButton)?_vm._t("nextButton"):_c('span',[_vm._v(">")])],2)]:_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"touch",rawName:"v-touch:swipe.left",value:(_vm.onDragNext),expression:"onDragNext",arg:"swipe",modifiers:{"left":true}},{name:"touch",rawName:"v-touch:swipe.right",value:(_vm.onDragPrev),expression:"onDragPrev",arg:"swipe",modifiers:{"right":true}},{name:"touch-options",rawName:"v-touch-options",value:(_vm.touchOptions),expression:"touchOptions"}],staticClass:"carousel__track",style:({
-          width: (_vm.trackWidth + "px"),
-          transform: ("translateX(" + _vm.translateValue + "px)"),
-          transition: ("transform " + (_vm.speed / 10000) + "s"),
-          cursor: _vm.draggable ? 'grab' : 'default'
-        }),on:{"mouseenter":_vm.stopAutoplay,"mouseleave":_vm.startAutoplay}},_vm._l((_vm.$slots.default),function(element,idx){return _c('div',{key:((element.tag) + "-" + idx),ref:"carouselElement",refInFor:true,staticClass:"carousel__element",style:({
-            width: (_vm.carouselElementWidth + "px")
-          })},[_c('PassedNode',{attrs:{"nodes":element}})],1)}),0),_vm._v(" "),(_vm.enableDots)?[[_vm._t("customDots")],_vm._v(" "),(!_vm.$slots.customDots)?_c('div',{staticClass:"carousel__dots",style:({
-            margin: _vm.dotsData.margin,
-            padding: _vm.dotsData.padding
-          })},_vm._l((_vm.pages),function(dot,idx){return _c('button',{key:("carousel-dot-" + idx),class:{
-              carousel__dot: true,
-              'carousel__dot--active': _vm.currentPageIndex === idx
-            },style:({
-              width: ((_vm.dotsData.dots.size) + "px"),
-              height: ((_vm.dotsData.dots.size) + "px"),
-              marginRight:
-                idx === _vm.$slots.default.length - 1
-                  ? 0
-                  : ((_vm.dotsData.dots.spacing) + "px")
-            }),on:{"click":function($event){return _vm.goToPage(idx)}}})}),0):_vm._e()]:_vm._e()],2)};
+    var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"carousel-wrapper"},[(_vm.disabled)?[_vm._t("default")]:_c('div',{ref:"carousel",staticClass:"carousel",style:({
+          height: _vm.autoHeight ? 'auto' : '100%'
+        })},[(_vm.enableButtons)?[_c('button',{staticClass:"carousel__button carousel__button--prev",on:{"click":_vm.prev}},[(_vm.$slots.prevButton)?_vm._t("prevButton"):_c('span',[_vm._v("<")])],2),_vm._v(" "),_c('button',{staticClass:"carousel__button carousel__button--next",on:{"click":_vm.next}},[(_vm.$slots.nextButton)?_vm._t("nextButton"):_c('span',[_vm._v(">")])],2)]:_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"touch",rawName:"v-touch:swipe.left",value:(_vm.onDragNext),expression:"onDragNext",arg:"swipe",modifiers:{"left":true}},{name:"touch",rawName:"v-touch:swipe.right",value:(_vm.onDragPrev),expression:"onDragPrev",arg:"swipe",modifiers:{"right":true}},{name:"touch-options",rawName:"v-touch-options",value:(_vm.touchOptions),expression:"touchOptions"}],staticClass:"carousel__track",style:({
+            width: (_vm.trackWidth + "px"),
+            transform: ("translateX(" + _vm.translateValue + "px)"),
+            transition: ("transform " + (_vm.speed / 10000) + "s"),
+            cursor: _vm.draggable ? 'grab' : 'default'
+          }),on:{"mouseenter":_vm.stopAutoplay,"mouseleave":_vm.startAutoplay}},_vm._l((_vm.$slots.default),function(element,idx){return _c('div',{key:((element.tag) + "-" + idx),ref:"carouselElement",refInFor:true,staticClass:"carousel__element",style:({
+              width: (_vm.carouselElementWidth + "px")
+            })},[_c('PassedNode',{attrs:{"nodes":element}})],1)}),0),_vm._v(" "),(_vm.enableDots)?[[_vm._t("customDots")],_vm._v(" "),(!_vm.$slots.customDots)?_c('div',{staticClass:"carousel__dots",style:({
+              margin: _vm.dotsData.margin,
+              padding: _vm.dotsData.padding
+            })},_vm._l((_vm.pages),function(dot,idx){return _c('button',{key:("carousel-dot-" + idx),class:{
+                carousel__dot: true,
+                'carousel__dot--active': _vm.currentPageIndex === idx
+              },style:({
+                width: ((_vm.dotsData.dots.size) + "px"),
+                height: ((_vm.dotsData.dots.size) + "px"),
+                marginRight:
+                  idx === _vm.$slots.default.length - 1
+                    ? 0
+                    : ((_vm.dotsData.dots.spacing) + "px")
+              }),on:{"click":function($event){return _vm.goToPage(idx)}}})}),0):_vm._e()]:_vm._e()],2)],2)};
     var __vue_staticRenderFns__ = [];
 
       /* style */
       var __vue_inject_styles__ = function (inject) {
         if (!inject) { return }
-        inject("data-v-14f85fee_0", { source: ".carousel[data-v-14f85fee]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-14f85fee]{display:flex;flex:1}.carousel__element[data-v-14f85fee]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-14f85fee]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-14f85fee]{right:0}.carousel__button--prev[data-v-14f85fee]{left:0}.carousel__dots[data-v-14f85fee]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-14f85fee]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-14f85fee]{opacity:.7}.carousel__dot[data-v-14f85fee]:hover{opacity:.8}", map: undefined, media: undefined });
+        inject("data-v-314b7c4b_0", { source: ".carousel[data-v-314b7c4b]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-314b7c4b]{display:flex;flex:1}.carousel__element[data-v-314b7c4b]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-314b7c4b]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-314b7c4b]{right:0}.carousel__button--prev[data-v-314b7c4b]{left:0}.carousel__dots[data-v-314b7c4b]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-314b7c4b]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-314b7c4b]{opacity:.7}.carousel__dot[data-v-314b7c4b]:hover{opacity:.8}", map: undefined, media: undefined });
 
       };
       /* scoped */
-      var __vue_scope_id__ = "data-v-14f85fee";
+      var __vue_scope_id__ = "data-v-314b7c4b";
       /* module identifier */
       var __vue_module_identifier__ = undefined;
       /* functional template */

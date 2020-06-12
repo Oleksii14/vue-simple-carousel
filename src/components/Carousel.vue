@@ -1,82 +1,89 @@
 <template>
-  <div
-    ref="carousel"
-    class="carousel"
-    :style="{
-      height: autoHeight ? 'auto' : '100%'
-    }"
-  >
-    <template v-if="enableButtons">
-      <button class="carousel__button carousel__button--prev" @click="prev">
-        <slot v-if="$slots.prevButton" name="prevButton" />
-        <span v-else>&#60;</span>
-      </button>
-
-      <button class="carousel__button carousel__button--next" @click="next">
-        <slot v-if="$slots.nextButton" name="nextButton" />
-        <span v-else>&#62;</span>
-      </button>
+  <div class="carousel-wrapper">
+    <template v-if="disabled">
+      <slot />
     </template>
 
     <div
-      v-touch:swipe.left="onDragNext"
-      v-touch:swipe.right="onDragPrev"
-      v-touch-options="touchOptions"
-      class="carousel__track"
+      v-else
+      ref="carousel"
+      class="carousel"
       :style="{
-        width: `${trackWidth}px`,
-        transform: `translateX(${translateValue}px)`,
-        transition: `transform ${speed / 10000}s`,
-        cursor: draggable ? 'grab' : 'default'
+        height: autoHeight ? 'auto' : '100%'
       }"
-      @mouseenter="stopAutoplay"
-      @mouseleave="startAutoplay"
     >
-      <div
-        v-for="(element, idx) in $slots.default"
-        ref="carouselElement"
-        :key="`${element.tag}-${idx}`"
-        :style="{
-          width: `${carouselElementWidth}px`
-        }"
-        class="carousel__element"
-      >
-        <PassedNode :nodes="element" />
-      </div>
-    </div>
+      <template v-if="enableButtons">
+        <button class="carousel__button carousel__button--prev" @click="prev">
+          <slot v-if="$slots.prevButton" name="prevButton" />
+          <span v-else>&#60;</span>
+        </button>
 
-    <template v-if="enableDots">
-      <template>
-        <slot name="customDots" />
+        <button class="carousel__button carousel__button--next" @click="next">
+          <slot v-if="$slots.nextButton" name="nextButton" />
+          <span v-else>&#62;</span>
+        </button>
       </template>
 
       <div
-        v-if="!$slots.customDots"
-        class="carousel__dots"
+        v-touch:swipe.left="onDragNext"
+        v-touch:swipe.right="onDragPrev"
+        v-touch-options="touchOptions"
+        class="carousel__track"
         :style="{
-          margin: dotsData.margin,
-          padding: dotsData.padding
+          width: `${trackWidth}px`,
+          transform: `translateX(${translateValue}px)`,
+          transition: `transform ${speed / 10000}s`,
+          cursor: draggable ? 'grab' : 'default'
         }"
+        @mouseenter="stopAutoplay"
+        @mouseleave="startAutoplay"
       >
-        <button
-          v-for="(dot, idx) in pages"
-          :key="`carousel-dot-${idx}`"
+        <div
+          v-for="(element, idx) in $slots.default"
+          ref="carouselElement"
+          :key="`${element.tag}-${idx}`"
           :style="{
-            width: `${dotsData.dots.size}px`,
-            height: `${dotsData.dots.size}px`,
-            marginRight:
-              idx === $slots.default.length - 1
-                ? 0
-                : `${dotsData.dots.spacing}px`
+            width: `${carouselElementWidth}px`
           }"
-          :class="{
-            carousel__dot: true,
-            'carousel__dot--active': currentPageIndex === idx
-          }"
-          @click="goToPage(idx)"
-        />
+          class="carousel__element"
+        >
+          <PassedNode :nodes="element" />
+        </div>
       </div>
-    </template>
+
+      <template v-if="enableDots">
+        <template>
+          <slot name="customDots" />
+        </template>
+
+        <div
+          v-if="!$slots.customDots"
+          class="carousel__dots"
+          :style="{
+            margin: dotsData.margin,
+            padding: dotsData.padding
+          }"
+        >
+          <button
+            v-for="(dot, idx) in pages"
+            :key="`carousel-dot-${idx}`"
+            :style="{
+              width: `${dotsData.dots.size}px`,
+              height: `${dotsData.dots.size}px`,
+              marginRight:
+                idx === $slots.default.length - 1
+                  ? 0
+                  : `${dotsData.dots.spacing}px`
+            }"
+            :class="{
+              carousel__dot: true,
+              'carousel__dot--active': currentPageIndex === idx
+            }"
+            @click="goToPage(idx)"
+          />
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -174,6 +181,9 @@ export default class Carousel extends Vue {
   @Prop({ default: false, type: Boolean })
   private autoplay!: boolean;
 
+  @Prop({ default: false, type: Boolean })
+  private manualInitialize!: boolean;
+
   @Prop({ default: true, type: Boolean })
   private stopAutoplayHover!: boolean;
 
@@ -216,6 +226,8 @@ export default class Carousel extends Vue {
   private currentPageIndex = 0;
 
   private autoplayIntervalId = 0;
+
+  private disabled = this.manualInitialize;
 
   public $refs!: {
     carouselElement: HTMLDivElement | HTMLDivElement[];
@@ -378,12 +390,21 @@ export default class Carousel extends Vue {
     }
   }
 
-  private mounted() {
-    this.setCarouselSizingSettings();
-
-    window.addEventListener("resize", this.setCarouselSizingSettings);
+  private initialize() {
+    this.disabled = false;
 
     this.startAutoplay();
+    window.addEventListener("resize", this.setCarouselSizingSettings);
+
+    this.$nextTick(() => {
+      this.setCarouselSizingSettings();
+    });
+  }
+
+  private mounted() {
+    if (!this.manualInitialize) {
+      this.initialize();
+    }
   }
 
   private destroyed() {
