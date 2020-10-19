@@ -401,6 +401,13 @@ export default class Carousel extends Vue {
     });
   }
 
+  private destroy() {
+    this.disabled = true;
+
+    this.stopAutoplay();
+    window.removeEventListener("resize", this.setCarouselSizingSettings);
+  }
+
   private mounted() {
     if (!this.manualInitialize) {
       this.initialize();

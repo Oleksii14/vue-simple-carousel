@@ -189,6 +189,8 @@ export default {
 
 `initialize` - initializes a carousel if it is disabled (if you passed `manual-initialize` prop as `true`)
 
+`destroy` - destroys a carousel (only default slot will be shown)
+
 *Common example*:
 
 ```
