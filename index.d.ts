@@ -35,6 +35,7 @@ export interface Carousel {
   setCarouselSizingSettings: () => void;
   goToPage: (pageIdx: number) => void;
   initialize: () => void;
+  destroy: () => void;
 }
 
 declare const Vue2SimpleCarousel: ComponentOptions<Vue>;
