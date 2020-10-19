@@ -208,6 +208,11 @@ var Carousel = /** @class */ (function (_super) {
             _this.setCarouselSizingSettings();
         });
     };
+    Carousel.prototype.destroy = function () {
+        this.disabled = true;
+        this.stopAutoplay();
+        window.removeEventListener("resize", this.setCarouselSizingSettings);
+    };
     Carousel.prototype.mounted = function () {
         if (!this.manualInitialize) {
             this.initialize();
@@ -451,11 +456,11 @@ var __vue_staticRenderFns__ = [];
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-0bf6f914_0", { source: ".carousel[data-v-0bf6f914]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-0bf6f914]{display:flex;flex:1}.carousel__element[data-v-0bf6f914]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-0bf6f914]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-0bf6f914]{right:0}.carousel__button--prev[data-v-0bf6f914]{left:0}.carousel__dots[data-v-0bf6f914]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-0bf6f914]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-0bf6f914]{opacity:.7}.carousel__dot[data-v-0bf6f914]:hover{opacity:.8}", map: undefined, media: undefined });
+    inject("data-v-3ab39008_0", { source: ".carousel[data-v-3ab39008]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-3ab39008]{display:flex;flex:1}.carousel__element[data-v-3ab39008]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-3ab39008]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-3ab39008]{right:0}.carousel__button--prev[data-v-3ab39008]{left:0}.carousel__dots[data-v-3ab39008]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-3ab39008]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-3ab39008]{opacity:.7}.carousel__dot[data-v-3ab39008]:hover{opacity:.8}", map: undefined, media: undefined });
 
   };
   /* scoped */
-  var __vue_scope_id__ = "data-v-0bf6f914";
+  var __vue_scope_id__ = "data-v-3ab39008";
   /* module identifier */
   var __vue_module_identifier__ = undefined;
   /* functional template */
