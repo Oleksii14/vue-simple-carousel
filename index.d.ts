@@ -17,6 +17,7 @@ export interface Carousel {
   readonly goBackOnEnd: boolean;
   readonly navigateBySlide: boolean;
   readonly draggable: boolean;
+  readonly disabled: boolean;
   readonly speed: number;
   readonly itemsPerView: number;
   readonly dotsData: DotsData;
