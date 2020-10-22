@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <Carousel>
+    <SimpleCarousel>
       <div class="item">1</div>
       <div class="item">2</div>
       <div class="item">3</div>
-      <div class="item">3</div>
-      <div class="item">3</div>
-      <div class="item">3</div>
-    </Carousel>
+      <div class="item">4</div>
+      <div class="item">5</div>
+      <div class="item">6</div>
+    </SimpleCarousel>
   </div>
 </template>
 
@@ -31,11 +31,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import Carousel from "@/components/Carousel.vue";
+import SimpleCarousel from "@/components/SimpleCarousel.vue";
 
 @Component({
   components: {
-    Carousel
+    SimpleCarousel
   }
 })
 export default class App extends Vue {}

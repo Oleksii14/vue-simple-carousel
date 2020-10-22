@@ -60,6 +60,34 @@ var Carousel = /** @class */ (function (_super) {
         _this.disabled = _this.manualInitialize;
         return _this;
     }
+    Object.defineProperty(Carousel.prototype, "showPrevButton", {
+        get: function () {
+            if (this.hideButtonsOnStartEnd) {
+                return this.navigateBySlide
+                    ? this.currentSlideIndex > 0
+                    : this.currentPageIndex > 0;
+            }
+            else {
+                return true;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Carousel.prototype, "showNextButton", {
+        get: function () {
+            if (this.hideButtonsOnStartEnd) {
+                return this.navigateBySlide
+                    ? this.currentSlideIndex < this.maximumSlideIndex
+                    : this.currentPageIndex < this.pages - 1;
+            }
+            else {
+                return true;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Carousel.prototype, "itemsCount", {
         get: function () {
             return this.$slots.default.length;
@@ -265,6 +293,9 @@ var Carousel = /** @class */ (function (_super) {
         Prop({ default: 3, type: Number })
     ], Carousel.prototype, "itemsPerView", void 0);
     __decorate([
+        Prop({ default: false, type: Boolean })
+    ], Carousel.prototype, "hideButtonsOnStartEnd", void 0);
+    __decorate([
         Prop({ default: function () { return DEFAULT_DOTS_DATA; }, type: Object })
     ], Carousel.prototype, "dotsData", void 0);
     __decorate([
@@ -430,7 +461,7 @@ var __vue_script__ = Carousel;
 /* template */
 var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"carousel-wrapper"},[(_vm.disabled)?_c('div',{staticClass:"carousel__disable-wrapper"},[_vm._t("default")],2):_c('div',{ref:"carousel",staticClass:"carousel",style:({
       height: _vm.autoHeight ? 'auto' : '100%'
-    })},[(_vm.enableButtons)?[_c('button',{staticClass:"carousel__button carousel__button--prev",on:{"click":_vm.prev}},[(_vm.$slots.prevButton)?_vm._t("prevButton"):_c('span',[_vm._v("<")])],2),_vm._v(" "),_c('button',{staticClass:"carousel__button carousel__button--next",on:{"click":_vm.next}},[(_vm.$slots.nextButton)?_vm._t("nextButton"):_c('span',[_vm._v(">")])],2)]:_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"touch",rawName:"v-touch:swipe.left",value:(_vm.onDragNext),expression:"onDragNext",arg:"swipe",modifiers:{"left":true}},{name:"touch",rawName:"v-touch:swipe.right",value:(_vm.onDragPrev),expression:"onDragPrev",arg:"swipe",modifiers:{"right":true}},{name:"touch-options",rawName:"v-touch-options",value:(_vm.touchOptions),expression:"touchOptions"}],staticClass:"carousel__track",style:({
+    })},[(_vm.enableButtons)?[(_vm.showPrevButton)?_c('button',{staticClass:"carousel__button carousel__button--prev",on:{"click":_vm.prev}},[(_vm.$slots.prevButton)?_vm._t("prevButton"):_c('span',[_vm._v("<")])],2):_vm._e(),_vm._v(" "),(_vm.showNextButton)?_c('button',{staticClass:"carousel__button carousel__button--next",on:{"click":_vm.next}},[(_vm.$slots.nextButton)?_vm._t("nextButton"):_c('span',[_vm._v(">")])],2):_vm._e()]:_vm._e(),_vm._v(" "),_c('div',{directives:[{name:"touch",rawName:"v-touch:swipe.left",value:(_vm.onDragNext),expression:"onDragNext",arg:"swipe",modifiers:{"left":true}},{name:"touch",rawName:"v-touch:swipe.right",value:(_vm.onDragPrev),expression:"onDragPrev",arg:"swipe",modifiers:{"right":true}},{name:"touch-options",rawName:"v-touch-options",value:(_vm.touchOptions),expression:"touchOptions"}],staticClass:"carousel__track",style:({
         width: (_vm.trackWidth + "px"),
         transform: ("translateX(" + _vm.translateValue + "px)"),
         transition: ("transform " + (_vm.speed / 10000) + "s"),
@@ -456,11 +487,11 @@ var __vue_staticRenderFns__ = [];
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-3ab39008_0", { source: ".carousel[data-v-3ab39008]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-3ab39008]{display:flex;flex:1}.carousel__element[data-v-3ab39008]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-3ab39008]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-3ab39008]{right:0}.carousel__button--prev[data-v-3ab39008]{left:0}.carousel__dots[data-v-3ab39008]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-3ab39008]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-3ab39008]{opacity:.7}.carousel__dot[data-v-3ab39008]:hover{opacity:.8}", map: undefined, media: undefined });
+    inject("data-v-57e5b6db_0", { source: ".carousel[data-v-57e5b6db]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-57e5b6db]{display:flex;flex:1}.carousel__element[data-v-57e5b6db]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-57e5b6db]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-57e5b6db]{right:0}.carousel__button--prev[data-v-57e5b6db]{left:0}.carousel__dots[data-v-57e5b6db]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-57e5b6db]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-57e5b6db]{opacity:.7}.carousel__dot[data-v-57e5b6db]:hover{opacity:.8}", map: undefined, media: undefined });
 
   };
   /* scoped */
-  var __vue_scope_id__ = "data-v-3ab39008";
+  var __vue_scope_id__ = "data-v-57e5b6db";
   /* module identifier */
   var __vue_module_identifier__ = undefined;
   /* functional template */

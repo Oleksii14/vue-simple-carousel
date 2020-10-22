@@ -1,4 +1,4 @@
-import Vue2SimpleCarousel from "./components/Carousel.vue";
+import Vue2SimpleCarousel from "./components/SimpleCarousel.vue";
 
 function install(Vue) {
   if (!install.installed) {

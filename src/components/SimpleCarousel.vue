@@ -13,12 +13,20 @@
       }"
     >
       <template v-if="enableButtons">
-        <button class="carousel__button carousel__button--prev" @click="prev">
+        <button
+          v-if="showPrevButton"
+          class="carousel__button carousel__button--prev"
+          @click="prev"
+        >
           <slot v-if="$slots.prevButton" name="prevButton" />
           <span v-else>&#60;</span>
         </button>
 
-        <button class="carousel__button carousel__button--next" @click="next">
+        <button
+          v-if="showNextButton"
+          class="carousel__button carousel__button--next"
+          @click="next"
+        >
           <slot v-if="$slots.nextButton" name="nextButton" />
           <span v-else>&#62;</span>
         </button>
@@ -211,6 +219,9 @@ export default class Carousel extends Vue {
   @Prop({ default: 3, type: Number })
   private itemsPerView!: number;
 
+  @Prop({ default: false, type: Boolean })
+  private hideButtonsOnStartEnd!: boolean;
+
   @Prop({ default: () => DEFAULT_DOTS_DATA, type: Object })
   private dotsData!: IDotsData;
 
@@ -233,6 +244,26 @@ export default class Carousel extends Vue {
     carouselElement: HTMLDivElement | HTMLDivElement[];
     carousel: HTMLDivElement;
   };
+
+  private get showPrevButton() {
+    if (this.hideButtonsOnStartEnd) {
+      return this.navigateBySlide
+        ? this.currentSlideIndex > 0
+        : this.currentPageIndex > 0;
+    } else {
+      return true;
+    }
+  }
+
+  private get showNextButton() {
+    if (this.hideButtonsOnStartEnd) {
+      return this.navigateBySlide
+        ? this.currentSlideIndex < this.maximumSlideIndex
+        : this.currentPageIndex < this.pages - 1;
+    } else {
+      return true;
+    }
+  }
 
   private get itemsCount() {
     return this.$slots.default!.length;

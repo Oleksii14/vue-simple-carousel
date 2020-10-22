@@ -34,25 +34,25 @@ yarn add vue2-simple-carousel
 
 ```
 // <script>
-import Carousel from "vue2-simple-carousel";
+import SimpleCarousel from "vue2-simple-carousel";
 
 export default {
     ...
     components: {
-        Carousel
+        SimpleCarousel
     }
 }
 
 // <template>
 
-<Carousel>
+<SimpleCarousel>
     <div>1</div>
     <div>2</div>
     <div>3</div>
     <div>4</div>
     <div>5</div>
     <div>6</div>
-</Carousel>
+</SimpleCarousel>
 ```
 
 ## Props 💡
@@ -73,6 +73,7 @@ export default {
 |items-per-view|Number|3|Sets the number of items per *page* (view)
 |dots-data|Object|`dotsDataObject`|Sets the number of items per *page* (view)
 |touch-options|Object|`touchOptionsObject`|Sets the number of items per *page* (view)
+|hide-buttons-on-start-end|Boolean|false|Hides the navigation buttons according to the slide/page number. If we are on the first slide/page -> prev button will be hidden. If we are on the last slide/page -> the next button will be hidden
 
 `touchOptionsObject`:
 ```
@@ -98,22 +99,22 @@ export default {
 #### Examples
 
 ```
-<Carousel
+<SimpleCarousel
     navigate-by-slide
     @on-slide-change="customSlideChangeHandle"
 >
     ...
-</Carousel>
+</SimpleCarousel>
 ```
 
 or if you navigate by page:
 
 ```
-<Carousel
+<SimpleCarousel
     @on-page-change="customPageChangeHandle"
 >
     ...
-</Carousel>
+</SimpleCarousel>
 ```
 
 ## Slots 🧭
@@ -124,14 +125,14 @@ or if you navigate by page:
 #### prevButton, nextButton
 
 ```
-<Carousel ref="carousel">
+<SimpleCarousel ref="carousel">
     <!-- Those spans will be wrapped in <button> tags, so don't worry about accessibility 😉  -->
     <span slot="prevButton">Click to go back!</span>
     <span slot="nextButton">Click to go next!</span>
     <div>1</div>
     <div>2</div>
     <div>3</div>
-</Carousel>
+</SimpleCarousel>
 ```
 
 #### customDots
@@ -140,7 +141,7 @@ This slot is needed when you want to provide fully custom dots and avoid global 
 
 *template*: 
 ```
-<Carousel ref="carousel">
+<SimpleCarousel ref="carousel">
     <div>1</div>
     <div>2</div>
     <div>3</div>
@@ -150,7 +151,7 @@ This slot is needed when you want to provide fully custom dots and avoid global 
             {{ dot }}
         </button>
     </div>
-</Carousel>
+</SimpleCarousel>
 ```
 
 *script*:
@@ -203,11 +204,11 @@ export default {
 
 *Example with initializing*:
 ```
-<Carousel manual-initialize>
+<SimpleCarousel manual-initialize>
     <div class="item">1</div>
     <div class="item">2</div>
     <div class="item">3</div>
-</Carousel>
+</SimpleCarousel>
 
 <button @click="$refs.carousel.initialize()">
     Initialize a carousel
