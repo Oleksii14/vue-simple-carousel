@@ -11,6 +11,13 @@ export interface DotsData {
 }
 
 export interface Carousel {
+  readonly translateValue: number;
+  readonly trackWidth: number;
+  readonly carouselElementWidth: number;
+  readonly currentSlideIndex: number;
+  readonly currentPageIndex: number;
+  readonly autoplayIntervalId: number;
+  readonly disabled: boolean;
   readonly autoHeight: boolean;
   readonly autoplay: boolean;
   readonly manualInitialize: boolean;
