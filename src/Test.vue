@@ -29,16 +29,12 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
+import Vue from "vue";
 import SimpleCarousel from "@/components/SimpleCarousel.vue";
 
-@Component({
+export default Vue.extend({
   components: {
     SimpleCarousel
   }
-})
-export default class App extends Vue {}
+});
 </script>
-
-<style lang="scss"></style>

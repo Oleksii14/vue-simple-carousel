@@ -164,300 +164,317 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { RenderContext, CreateElement } from "vue";
+import Vue, { RenderContext, CreateElement, PropType } from "vue";
 
-import { IDotsData } from "./interfaces";
+import { Computed, Data, IDotsData, Methods, Props } from "./interfaces";
 import { DEFAULT_DOTS_DATA } from "./helpers";
 
 import Vue2TouchEvents, { Vue2TouchEventsOptions } from "vue2-touch-events";
 
 Vue.use(Vue2TouchEvents);
 
-@Component({
+export default Vue.extend<Data, Methods, Computed, Props>({
+  name: "Vue2SimpleCarousel",
+
   components: {
     PassedNode: {
       functional: true,
       render: (_: CreateElement, ctx: RenderContext) => ctx.props.nodes
     }
-  }
-})
-export default class Carousel extends Vue {
-  @Prop({ default: false, type: Boolean })
-  private autoHeight!: boolean;
+  },
 
-  @Prop({ default: false, type: Boolean })
-  private autoplay!: boolean;
-
-  @Prop({ default: false, type: Boolean })
-  private manualInitialize!: boolean;
-
-  @Prop({ default: true, type: Boolean })
-  private stopAutoplayHover!: boolean;
-
-  @Prop({ default: true, type: Boolean })
-  private enableButtons!: boolean;
-
-  @Prop({ default: false, type: Boolean })
-  private enableDots!: boolean;
-
-  @Prop({ default: false, type: Boolean })
-  private goBackOnEnd!: boolean;
-
-  @Prop({ default: false, type: Boolean })
-  private navigateBySlide!: boolean;
-
-  @Prop({ default: true, type: Boolean })
-  private draggable!: boolean;
-
-  @Prop({ default: 3000, type: Number })
-  private speed!: number;
-
-  @Prop({ default: 1500, type: Number })
-  private autoplayTimeout!: number;
-
-  @Prop({ default: 3, type: Number })
-  private itemsPerView!: number;
-
-  @Prop({ default: false, type: Boolean })
-  private hideButtonsOnStartEnd!: boolean;
-
-  @Prop({ default: () => DEFAULT_DOTS_DATA, type: Object })
-  private dotsData!: IDotsData;
-
-  @Prop({ default: () => ({ swipeTolerance: 80 }), type: Object })
-  private touchOptions!: Vue2TouchEventsOptions;
-
-  private translateValue = 0;
-
-  private trackWidth = 0;
-  private carouselElementWidth = 0;
-
-  private currentSlideIndex = 0;
-  private currentPageIndex = 0;
-
-  private autoplayIntervalId = 0;
-
-  private disabled = this.manualInitialize;
-
-  public $refs!: {
-    carouselElement: HTMLDivElement | HTMLDivElement[];
-    carousel: HTMLDivElement;
-  };
-
-  private get showPrevButton() {
-    if (this.hideButtonsOnStartEnd) {
-      return this.navigateBySlide
-        ? this.currentSlideIndex > 0
-        : this.currentPageIndex > 0;
-    } else {
-      return true;
+  props: {
+    autoHeight: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    },
+    autoplay: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    },
+    manualInitialize: {
+      default: false,
+      type: Boolean as PropType<boolean>
+    },
+    stopAutoplayHover: {
+      default: true,
+      type: Boolean as PropType<boolean>
+    },
+    enableButtons: {
+      default: true,
+      type: Boolean as PropType<boolean>
+    },
+    enableDots: {
+      default: false,
+      type: Boolean as PropType<boolean>
+    },
+    goBackOnEnd: {
+      default: false,
+      type: Boolean as PropType<boolean>
+    },
+    navigateBySlide: {
+      default: false,
+      type: Boolean as PropType<boolean>
+    },
+    draggable: {
+      default: true,
+      type: Boolean as PropType<boolean>
+    },
+    speed: {
+      default: 3000,
+      type: Number as PropType<number>
+    },
+    autoplayTimeout: {
+      default: 1500,
+      type: Number as PropType<number>
+    },
+    itemsPerView: {
+      default: 3,
+      type: Number as PropType<number>
+    },
+    hideButtonsOnStartEnd: {
+      default: false,
+      type: Boolean as PropType<boolean>
+    },
+    dotsData: {
+      default: () => DEFAULT_DOTS_DATA,
+      type: Object as PropType<IDotsData>
+    },
+    touchOptions: {
+      default: () => ({ swipeTolerance: 80 }),
+      type: Object as PropType<Vue2TouchEventsOptions>
     }
-  }
+  },
 
-  private get showNextButton() {
-    if (this.hideButtonsOnStartEnd) {
-      return this.navigateBySlide
-        ? this.currentSlideIndex < this.maximumSlideIndex
-        : this.currentPageIndex < this.pages - 1;
-    } else {
-      return true;
-    }
-  }
+  data() {
+    return {
+      translateValue: 0,
+      trackWidth: 0,
+      carouselElementWidth: 0,
+      currentSlideIndex: 0,
+      currentPageIndex: 0,
+      autoplayIntervalId: 0,
+      disabled: this.manualInitialize
+    };
+  },
 
-  private get itemsCount() {
-    return this.$slots.default!.length;
-  }
-
-  private get maximumSlideIndex() {
-    return this.itemsCount - this.itemsPerView;
-  }
-
-  private get pages() {
-    return Math.ceil(this.itemsCount / this.itemsPerView);
-  }
-
-  private get itemsPerPage() {
-    const itemsPerPage: number[] = [];
-    let remainder = this.itemsCount;
-
-    for (let i = 0; i < this.pages; i++) {
-      itemsPerPage.push(
-        remainder > this.itemsPerView ? this.itemsPerView : remainder
-      );
-
-      remainder = remainder - this.itemsPerView;
-    }
-
-    return itemsPerPage;
-  }
-
-  private goToBeginning() {
-    this.currentPageIndex = 0;
-    this.currentSlideIndex = 0;
-    this.translateValue = 0;
-  }
-
-  private next(autoplay?: true) {
-    this.navigateBySlide
-      ? this.onNextBySlide(autoplay)
-      : this.onNextByPage(autoplay);
-  }
-
-  private onNextBySlide(autoplay?: true) {
-    if (this.currentSlideIndex < this.maximumSlideIndex) {
-      this.currentSlideIndex++;
-      this.translateValue = this.translateValue - this.carouselElementWidth;
-
-      if (
-        this.currentSlideIndex % this.itemsPerView === 0 ||
-        this.itemsPerPage[this.currentPageIndex + 1] < this.itemsPerView
-      ) {
-        this.currentPageIndex++;
+  computed: {
+    showPrevButton(): boolean {
+      if (this.hideButtonsOnStartEnd) {
+        return this.navigateBySlide
+          ? this.currentSlideIndex > 0
+          : this.currentPageIndex > 0;
+      } else {
+        return true;
       }
-    } else {
-      if (this.goBackOnEnd || autoplay) {
-        this.goToBeginning();
+    },
+
+    showNextButton(): boolean {
+      if (this.hideButtonsOnStartEnd) {
+        return this.navigateBySlide
+          ? this.currentSlideIndex < this.maximumSlideIndex
+          : this.currentPageIndex < this.pages - 1;
+      } else {
+        return true;
       }
-    }
-  }
+    },
 
-  private onNextByPage(autoplay?: true) {
-    if (this.currentPageIndex < this.pages - 1) {
-      this.goToPage(this.currentPageIndex + 1);
-    } else {
-      if (this.goBackOnEnd || autoplay) {
-        this.goToBeginning();
+    itemsCount() {
+      return this.$slots.default!.length;
+    },
+
+    maximumSlideIndex(): number {
+      return this.itemsCount - this.itemsPerView;
+    },
+
+    pages(): number {
+      return Math.ceil(this.itemsCount / this.itemsPerView);
+    },
+
+    itemsPerPage(): number[] {
+      const itemsPerPage: number[] = [];
+      let remainder = this.itemsCount;
+
+      for (let i = 0; i < this.pages; i++) {
+        itemsPerPage.push(
+          remainder > this.itemsPerView ? this.itemsPerView : remainder
+        );
+
+        remainder = remainder - this.itemsPerView;
       }
+
+      return itemsPerPage;
     }
-  }
+  },
 
-  private prev() {
-    this.navigateBySlide ? this.onPrevBySlide() : this.onPrevByPage();
-  }
+  watch: {
+    currentSlideIndex(value: number) {
+      this.$emit("on-slide-change", value);
+    },
 
-  private onPrevBySlide() {
-    if (this.currentSlideIndex > 0) {
-      this.currentSlideIndex--;
-      this.translateValue = this.translateValue + this.carouselElementWidth;
-
-      if (this.currentSlideIndex % this.itemsPerView === 0) {
-        this.currentPageIndex--;
-      }
+    currentPageIndex(value: number) {
+      this.$emit("on-page-change", value);
     }
-  }
+  },
 
-  private onPrevByPage() {
-    if (this.currentPageIndex > 0) {
-      this.goToPage(this.currentPageIndex - 1);
-    }
-  }
-
-  private setCarouselSizingSettings() {
-    const carouselWidth = this.$refs.carousel.offsetWidth;
-    const elementsTranslated =
-      this.translateValue / this.carouselElementWidth || 0;
-
-    this.carouselElementWidth = carouselWidth / this.itemsPerView;
-    this.trackWidth = this.carouselElementWidth * this.itemsCount;
-
-    const translateValue = elementsTranslated * this.carouselElementWidth;
-    this.translateValue =
-      this.translateValue < 0 ? translateValue : -translateValue;
-  }
-
-  private goToPage(pageIndex: number) {
-    if (this.currentPageIndex === pageIndex) {
-      return;
-    }
-
-    if (pageIndex > this.currentPageIndex) {
-      this.translateValue = -(
-        this.carouselElementWidth * this.itemsPerPage[pageIndex] +
-        (pageIndex - 1) * this.itemsPerView * this.carouselElementWidth
-      );
-
-      this.currentSlideIndex =
-        this.itemsPerPage[pageIndex] < this.itemsPerView
-          ? pageIndex * this.itemsPerView -
-            (this.itemsPerView - this.itemsPerPage[pageIndex])
-          : pageIndex * this.itemsPerView;
-    } else {
-      this.translateValue = -(
-        this.carouselElementWidth *
-        this.itemsPerView *
-        pageIndex
-      );
-
-      this.currentSlideIndex = this.itemsPerView * pageIndex;
-    }
-
-    this.currentPageIndex = pageIndex;
-  }
-
-  private onDragNext() {
-    if (this.draggable) {
-      this.next();
-    }
-  }
-
-  private onDragPrev() {
-    if (this.draggable) {
-      this.prev();
-    }
-  }
-
-  private stopAutoplay() {
-    if (this.stopAutoplayHover) {
-      clearInterval(this.autoplayIntervalId);
-    }
-  }
-
-  private startAutoplay() {
-    if (this.autoplay) {
-      this.autoplayIntervalId = setInterval(() => {
-        this.next(true);
-      }, this.autoplayTimeout);
-    }
-  }
-
-  private initialize() {
-    this.disabled = false;
-
-    this.startAutoplay();
-    window.addEventListener("resize", this.setCarouselSizingSettings);
-
-    this.$nextTick(() => {
-      this.setCarouselSizingSettings();
-    });
-  }
-
-  private destroy() {
-    this.disabled = true;
-
-    this.stopAutoplay();
-    window.removeEventListener("resize", this.setCarouselSizingSettings);
-  }
-
-  private mounted() {
+  mounted() {
     if (!this.manualInitialize) {
       this.initialize();
     }
-  }
+  },
 
-  private destroyed() {
+  destroyed() {
     clearInterval(this.autoplayIntervalId);
     window.removeEventListener("resize", this.setCarouselSizingSettings);
-  }
+  },
 
-  @Watch("currentSlideIndex")
-  private onSlideChanged(value: number) {
-    this.$emit("on-slide-change", value);
-  }
+  methods: {
+    goToBeginning() {
+      this.currentPageIndex = 0;
+      this.currentSlideIndex = 0;
+      this.translateValue = 0;
+    },
 
-  @Watch("currentPageIndex")
-  private onPageChanged(value: number) {
-    this.$emit("on-page-change", value);
+    next(autoplay?: boolean) {
+      this.navigateBySlide
+        ? this.onNextBySlide(autoplay)
+        : this.onNextByPage(autoplay);
+    },
+
+    onNextBySlide(autoplay?: boolean) {
+      if (this.currentSlideIndex < this.maximumSlideIndex) {
+        this.currentSlideIndex++;
+        this.translateValue = this.translateValue - this.carouselElementWidth;
+
+        if (
+          this.currentSlideIndex % this.itemsPerView === 0 ||
+          this.itemsPerPage[this.currentPageIndex + 1] < this.itemsPerView
+        ) {
+          this.currentPageIndex++;
+        }
+      } else {
+        if (this.goBackOnEnd || autoplay) {
+          this.goToBeginning();
+        }
+      }
+    },
+
+    onNextByPage(autoplay?: boolean) {
+      if (this.currentPageIndex < this.pages - 1) {
+        this.goToPage(this.currentPageIndex + 1);
+      } else {
+        if (this.goBackOnEnd || autoplay) {
+          this.goToBeginning();
+        }
+      }
+    },
+
+    prev() {
+      this.navigateBySlide ? this.onPrevBySlide() : this.onPrevByPage();
+    },
+
+    onPrevBySlide() {
+      if (this.currentSlideIndex > 0) {
+        this.currentSlideIndex--;
+        this.translateValue = this.translateValue + this.carouselElementWidth;
+
+        if (this.currentSlideIndex % this.itemsPerView === 0) {
+          this.currentPageIndex--;
+        }
+      }
+    },
+
+    onPrevByPage() {
+      if (this.currentPageIndex > 0) {
+        this.goToPage(this.currentPageIndex - 1);
+      }
+    },
+
+    setCarouselSizingSettings() {
+      const carouselWidth = (this.$refs.carousel as HTMLDivElement).offsetWidth;
+      const elementsTranslated =
+        this.translateValue / this.carouselElementWidth || 0;
+
+      this.carouselElementWidth = carouselWidth / this.itemsPerView;
+      this.trackWidth = this.carouselElementWidth * this.itemsCount;
+
+      const translateValue = elementsTranslated * this.carouselElementWidth;
+      this.translateValue =
+        this.translateValue < 0 ? translateValue : -translateValue;
+    },
+
+    goToPage(pageIndex: number) {
+      if (this.currentPageIndex === pageIndex) {
+        return;
+      }
+
+      if (pageIndex > this.currentPageIndex) {
+        this.translateValue = -(
+          this.carouselElementWidth * this.itemsPerPage[pageIndex] +
+          (pageIndex - 1) * this.itemsPerView * this.carouselElementWidth
+        );
+
+        this.currentSlideIndex =
+          this.itemsPerPage[pageIndex] < this.itemsPerView
+            ? pageIndex * this.itemsPerView -
+              (this.itemsPerView - this.itemsPerPage[pageIndex])
+            : pageIndex * this.itemsPerView;
+      } else {
+        this.translateValue = -(
+          this.carouselElementWidth *
+          this.itemsPerView *
+          pageIndex
+        );
+
+        this.currentSlideIndex = this.itemsPerView * pageIndex;
+      }
+
+      this.currentPageIndex = pageIndex;
+    },
+
+    onDragNext() {
+      if (this.draggable) {
+        this.next();
+      }
+    },
+
+    onDragPrev() {
+      if (this.draggable) {
+        this.prev();
+      }
+    },
+
+    stopAutoplay() {
+      if (this.stopAutoplayHover) {
+        clearInterval(this.autoplayIntervalId);
+      }
+    },
+
+    startAutoplay() {
+      if (this.autoplay) {
+        this.autoplayIntervalId = setInterval(() => {
+          this.next(true);
+        }, this.autoplayTimeout);
+      }
+    },
+
+    initialize() {
+      this.disabled = false;
+
+      this.startAutoplay();
+      window.addEventListener("resize", this.setCarouselSizingSettings);
+
+      this.$nextTick(() => {
+        this.setCarouselSizingSettings();
+      });
+    },
+
+    destroy() {
+      this.disabled = true;
+
+      this.stopAutoplay();
+      window.removeEventListener("resize", this.setCarouselSizingSettings);
+    }
   }
-}
+});
 </script>

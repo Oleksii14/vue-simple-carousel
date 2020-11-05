@@ -1,5 +1,7 @@
 # vue2-simple-carousel 🎠
 
+### Vue 2.x only
+
 Noticed a bug? Please report - https://github.com/Oleksii14/vue2-simple-carousel/issues
 
 #### It is:

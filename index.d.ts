@@ -12,30 +12,39 @@ export interface DotsData {
 
 export interface Carousel {
   readonly autoHeight: boolean;
+  readonly autoplay: boolean;
+  readonly manualInitialize: boolean;
+  readonly stopAutoplayHover: boolean;
   readonly enableButtons: boolean;
   readonly enableDots: boolean;
   readonly goBackOnEnd: boolean;
   readonly navigateBySlide: boolean;
-  readonly hideButtonsOnStartEnd: boolean;
   readonly draggable: boolean;
-  readonly disabled: boolean;
   readonly speed: number;
+  readonly autoplayTimeout: number;
   readonly itemsPerView: number;
+  readonly hideButtonsOnStartEnd: boolean;
   readonly dotsData: DotsData;
   readonly touchOptions: Vue2TouchEventsOptions;
+  readonly showPrevButton: boolean;
+  readonly showNextButton: boolean;
   readonly itemsCount: number;
   readonly maximumSlideIndex: number;
   readonly pages: number;
-  readonly itemsPerPage: number;
+  readonly itemsPerPage: number[];
   goToBeginning: () => void;
-  next: () => void;
-  onNextBySlide: () => void;
-  onNextByPage: () => void;
+  next: (autoplay?: boolean) => void;
+  onNextBySlide: (autoplay?: boolean) => void;
+  onNextByPage: (autoplay?: boolean) => void;
   prev: () => void;
   onPrevBySlide: () => void;
   onPrevByPage: () => void;
   setCarouselSizingSettings: () => void;
-  goToPage: (pageIdx: number) => void;
+  goToPage: (pageIndex: number) => void;
+  onDragNext: () => void;
+  onDragPrev: () => void;
+  stopAutoplay: () => void;
+  startAutoplay: () => void;
   initialize: () => void;
   destroy: () => void;
 }

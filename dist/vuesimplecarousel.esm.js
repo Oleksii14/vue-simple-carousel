@@ -1,41 +1,5 @@
-import { Vue, Prop, Watch, Component } from 'vue-property-decorator';
+import Vue from 'vue';
 import Vue2TouchEvents from 'vue2-touch-events';
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-function __decorate(decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-}
 
 var DEFAULT_DOTS_DATA = {
     margin: "10px 0 0 0",
@@ -47,21 +11,89 @@ var DEFAULT_DOTS_DATA = {
 };
 
 Vue.use(Vue2TouchEvents);
-var Carousel = /** @class */ (function (_super) {
-    __extends(Carousel, _super);
-    function Carousel() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.translateValue = 0;
-        _this.trackWidth = 0;
-        _this.carouselElementWidth = 0;
-        _this.currentSlideIndex = 0;
-        _this.currentPageIndex = 0;
-        _this.autoplayIntervalId = 0;
-        _this.disabled = _this.manualInitialize;
-        return _this;
-    }
-    Object.defineProperty(Carousel.prototype, "showPrevButton", {
-        get: function () {
+var script = Vue.extend({
+    name: "Vue2SimpleCarousel",
+    components: {
+        PassedNode: {
+            functional: true,
+            render: function (_, ctx) { return ctx.props.nodes; }
+        }
+    },
+    props: {
+        autoHeight: {
+            type: Boolean,
+            default: false
+        },
+        autoplay: {
+            type: Boolean,
+            default: false
+        },
+        manualInitialize: {
+            default: false,
+            type: Boolean
+        },
+        stopAutoplayHover: {
+            default: true,
+            type: Boolean
+        },
+        enableButtons: {
+            default: true,
+            type: Boolean
+        },
+        enableDots: {
+            default: false,
+            type: Boolean
+        },
+        goBackOnEnd: {
+            default: false,
+            type: Boolean
+        },
+        navigateBySlide: {
+            default: false,
+            type: Boolean
+        },
+        draggable: {
+            default: true,
+            type: Boolean
+        },
+        speed: {
+            default: 3000,
+            type: Number
+        },
+        autoplayTimeout: {
+            default: 1500,
+            type: Number
+        },
+        itemsPerView: {
+            default: 3,
+            type: Number
+        },
+        hideButtonsOnStartEnd: {
+            default: false,
+            type: Boolean
+        },
+        dotsData: {
+            default: function () { return DEFAULT_DOTS_DATA; },
+            type: Object
+        },
+        touchOptions: {
+            default: function () { return ({ swipeTolerance: 80 }); },
+            type: Object
+        }
+    },
+    data: function () {
+        return {
+            translateValue: 0,
+            trackWidth: 0,
+            carouselElementWidth: 0,
+            currentSlideIndex: 0,
+            currentPageIndex: 0,
+            autoplayIntervalId: 0,
+            disabled: this.manualInitialize
+        };
+    },
+    computed: {
+        showPrevButton: function () {
             if (this.hideButtonsOnStartEnd) {
                 return this.navigateBySlide
                     ? this.currentSlideIndex > 0
@@ -71,11 +103,7 @@ var Carousel = /** @class */ (function (_super) {
                 return true;
             }
         },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Carousel.prototype, "showNextButton", {
-        get: function () {
+        showNextButton: function () {
             if (this.hideButtonsOnStartEnd) {
                 return this.navigateBySlide
                     ? this.currentSlideIndex < this.maximumSlideIndex
@@ -85,32 +113,16 @@ var Carousel = /** @class */ (function (_super) {
                 return true;
             }
         },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Carousel.prototype, "itemsCount", {
-        get: function () {
+        itemsCount: function () {
             return this.$slots.default.length;
         },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Carousel.prototype, "maximumSlideIndex", {
-        get: function () {
+        maximumSlideIndex: function () {
             return this.itemsCount - this.itemsPerView;
         },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Carousel.prototype, "pages", {
-        get: function () {
+        pages: function () {
             return Math.ceil(this.itemsCount / this.itemsPerView);
         },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Carousel.prototype, "itemsPerPage", {
-        get: function () {
+        itemsPerPage: function () {
             var itemsPerPage = [];
             var remainder = this.itemsCount;
             for (var i = 0; i < this.pages; i++) {
@@ -118,207 +130,147 @@ var Carousel = /** @class */ (function (_super) {
                 remainder = remainder - this.itemsPerView;
             }
             return itemsPerPage;
+        }
+    },
+    watch: {
+        currentSlideIndex: function (value) {
+            this.$emit("on-slide-change", value);
         },
-        enumerable: true,
-        configurable: true
-    });
-    Carousel.prototype.goToBeginning = function () {
-        this.currentPageIndex = 0;
-        this.currentSlideIndex = 0;
-        this.translateValue = 0;
-    };
-    Carousel.prototype.next = function (autoplay) {
-        this.navigateBySlide
-            ? this.onNextBySlide(autoplay)
-            : this.onNextByPage(autoplay);
-    };
-    Carousel.prototype.onNextBySlide = function (autoplay) {
-        if (this.currentSlideIndex < this.maximumSlideIndex) {
-            this.currentSlideIndex++;
-            this.translateValue = this.translateValue - this.carouselElementWidth;
-            if (this.currentSlideIndex % this.itemsPerView === 0 ||
-                this.itemsPerPage[this.currentPageIndex + 1] < this.itemsPerView) {
-                this.currentPageIndex++;
-            }
+        currentPageIndex: function (value) {
+            this.$emit("on-page-change", value);
         }
-        else {
-            if (this.goBackOnEnd || autoplay) {
-                this.goToBeginning();
-            }
-        }
-    };
-    Carousel.prototype.onNextByPage = function (autoplay) {
-        if (this.currentPageIndex < this.pages - 1) {
-            this.goToPage(this.currentPageIndex + 1);
-        }
-        else {
-            if (this.goBackOnEnd || autoplay) {
-                this.goToBeginning();
-            }
-        }
-    };
-    Carousel.prototype.prev = function () {
-        this.navigateBySlide ? this.onPrevBySlide() : this.onPrevByPage();
-    };
-    Carousel.prototype.onPrevBySlide = function () {
-        if (this.currentSlideIndex > 0) {
-            this.currentSlideIndex--;
-            this.translateValue = this.translateValue + this.carouselElementWidth;
-            if (this.currentSlideIndex % this.itemsPerView === 0) {
-                this.currentPageIndex--;
-            }
-        }
-    };
-    Carousel.prototype.onPrevByPage = function () {
-        if (this.currentPageIndex > 0) {
-            this.goToPage(this.currentPageIndex - 1);
-        }
-    };
-    Carousel.prototype.setCarouselSizingSettings = function () {
-        var carouselWidth = this.$refs.carousel.offsetWidth;
-        var elementsTranslated = this.translateValue / this.carouselElementWidth || 0;
-        this.carouselElementWidth = carouselWidth / this.itemsPerView;
-        this.trackWidth = this.carouselElementWidth * this.itemsCount;
-        var translateValue = elementsTranslated * this.carouselElementWidth;
-        this.translateValue =
-            this.translateValue < 0 ? translateValue : -translateValue;
-    };
-    Carousel.prototype.goToPage = function (pageIndex) {
-        if (this.currentPageIndex === pageIndex) {
-            return;
-        }
-        if (pageIndex > this.currentPageIndex) {
-            this.translateValue = -(this.carouselElementWidth * this.itemsPerPage[pageIndex] +
-                (pageIndex - 1) * this.itemsPerView * this.carouselElementWidth);
-            this.currentSlideIndex =
-                this.itemsPerPage[pageIndex] < this.itemsPerView
-                    ? pageIndex * this.itemsPerView -
-                        (this.itemsPerView - this.itemsPerPage[pageIndex])
-                    : pageIndex * this.itemsPerView;
-        }
-        else {
-            this.translateValue = -(this.carouselElementWidth *
-                this.itemsPerView *
-                pageIndex);
-            this.currentSlideIndex = this.itemsPerView * pageIndex;
-        }
-        this.currentPageIndex = pageIndex;
-    };
-    Carousel.prototype.onDragNext = function () {
-        if (this.draggable) {
-            this.next();
-        }
-    };
-    Carousel.prototype.onDragPrev = function () {
-        if (this.draggable) {
-            this.prev();
-        }
-    };
-    Carousel.prototype.stopAutoplay = function () {
-        if (this.stopAutoplayHover) {
-            clearInterval(this.autoplayIntervalId);
-        }
-    };
-    Carousel.prototype.startAutoplay = function () {
-        var _this = this;
-        if (this.autoplay) {
-            this.autoplayIntervalId = setInterval(function () {
-                _this.next(true);
-            }, this.autoplayTimeout);
-        }
-    };
-    Carousel.prototype.initialize = function () {
-        var _this = this;
-        this.disabled = false;
-        this.startAutoplay();
-        window.addEventListener("resize", this.setCarouselSizingSettings);
-        this.$nextTick(function () {
-            _this.setCarouselSizingSettings();
-        });
-    };
-    Carousel.prototype.destroy = function () {
-        this.disabled = true;
-        this.stopAutoplay();
-        window.removeEventListener("resize", this.setCarouselSizingSettings);
-    };
-    Carousel.prototype.mounted = function () {
+    },
+    mounted: function () {
         if (!this.manualInitialize) {
             this.initialize();
         }
-    };
-    Carousel.prototype.destroyed = function () {
+    },
+    destroyed: function () {
         clearInterval(this.autoplayIntervalId);
         window.removeEventListener("resize", this.setCarouselSizingSettings);
-    };
-    Carousel.prototype.onSlideChanged = function (value) {
-        this.$emit("on-slide-change", value);
-    };
-    Carousel.prototype.onPageChanged = function (value) {
-        this.$emit("on-page-change", value);
-    };
-    __decorate([
-        Prop({ default: false, type: Boolean })
-    ], Carousel.prototype, "autoHeight", void 0);
-    __decorate([
-        Prop({ default: false, type: Boolean })
-    ], Carousel.prototype, "autoplay", void 0);
-    __decorate([
-        Prop({ default: false, type: Boolean })
-    ], Carousel.prototype, "manualInitialize", void 0);
-    __decorate([
-        Prop({ default: true, type: Boolean })
-    ], Carousel.prototype, "stopAutoplayHover", void 0);
-    __decorate([
-        Prop({ default: true, type: Boolean })
-    ], Carousel.prototype, "enableButtons", void 0);
-    __decorate([
-        Prop({ default: false, type: Boolean })
-    ], Carousel.prototype, "enableDots", void 0);
-    __decorate([
-        Prop({ default: false, type: Boolean })
-    ], Carousel.prototype, "goBackOnEnd", void 0);
-    __decorate([
-        Prop({ default: false, type: Boolean })
-    ], Carousel.prototype, "navigateBySlide", void 0);
-    __decorate([
-        Prop({ default: true, type: Boolean })
-    ], Carousel.prototype, "draggable", void 0);
-    __decorate([
-        Prop({ default: 3000, type: Number })
-    ], Carousel.prototype, "speed", void 0);
-    __decorate([
-        Prop({ default: 1500, type: Number })
-    ], Carousel.prototype, "autoplayTimeout", void 0);
-    __decorate([
-        Prop({ default: 3, type: Number })
-    ], Carousel.prototype, "itemsPerView", void 0);
-    __decorate([
-        Prop({ default: false, type: Boolean })
-    ], Carousel.prototype, "hideButtonsOnStartEnd", void 0);
-    __decorate([
-        Prop({ default: function () { return DEFAULT_DOTS_DATA; }, type: Object })
-    ], Carousel.prototype, "dotsData", void 0);
-    __decorate([
-        Prop({ default: function () { return ({ swipeTolerance: 80 }); }, type: Object })
-    ], Carousel.prototype, "touchOptions", void 0);
-    __decorate([
-        Watch("currentSlideIndex")
-    ], Carousel.prototype, "onSlideChanged", null);
-    __decorate([
-        Watch("currentPageIndex")
-    ], Carousel.prototype, "onPageChanged", null);
-    Carousel = __decorate([
-        Component({
-            components: {
-                PassedNode: {
-                    functional: true,
-                    render: function (_, ctx) { return ctx.props.nodes; }
+    },
+    methods: {
+        goToBeginning: function () {
+            this.currentPageIndex = 0;
+            this.currentSlideIndex = 0;
+            this.translateValue = 0;
+        },
+        next: function (autoplay) {
+            this.navigateBySlide
+                ? this.onNextBySlide(autoplay)
+                : this.onNextByPage(autoplay);
+        },
+        onNextBySlide: function (autoplay) {
+            if (this.currentSlideIndex < this.maximumSlideIndex) {
+                this.currentSlideIndex++;
+                this.translateValue = this.translateValue - this.carouselElementWidth;
+                if (this.currentSlideIndex % this.itemsPerView === 0 ||
+                    this.itemsPerPage[this.currentPageIndex + 1] < this.itemsPerView) {
+                    this.currentPageIndex++;
                 }
             }
-        })
-    ], Carousel);
-    return Carousel;
-}(Vue));
+            else {
+                if (this.goBackOnEnd || autoplay) {
+                    this.goToBeginning();
+                }
+            }
+        },
+        onNextByPage: function (autoplay) {
+            if (this.currentPageIndex < this.pages - 1) {
+                this.goToPage(this.currentPageIndex + 1);
+            }
+            else {
+                if (this.goBackOnEnd || autoplay) {
+                    this.goToBeginning();
+                }
+            }
+        },
+        prev: function () {
+            this.navigateBySlide ? this.onPrevBySlide() : this.onPrevByPage();
+        },
+        onPrevBySlide: function () {
+            if (this.currentSlideIndex > 0) {
+                this.currentSlideIndex--;
+                this.translateValue = this.translateValue + this.carouselElementWidth;
+                if (this.currentSlideIndex % this.itemsPerView === 0) {
+                    this.currentPageIndex--;
+                }
+            }
+        },
+        onPrevByPage: function () {
+            if (this.currentPageIndex > 0) {
+                this.goToPage(this.currentPageIndex - 1);
+            }
+        },
+        setCarouselSizingSettings: function () {
+            var carouselWidth = this.$refs.carousel.offsetWidth;
+            var elementsTranslated = this.translateValue / this.carouselElementWidth || 0;
+            this.carouselElementWidth = carouselWidth / this.itemsPerView;
+            this.trackWidth = this.carouselElementWidth * this.itemsCount;
+            var translateValue = elementsTranslated * this.carouselElementWidth;
+            this.translateValue =
+                this.translateValue < 0 ? translateValue : -translateValue;
+        },
+        goToPage: function (pageIndex) {
+            if (this.currentPageIndex === pageIndex) {
+                return;
+            }
+            if (pageIndex > this.currentPageIndex) {
+                this.translateValue = -(this.carouselElementWidth * this.itemsPerPage[pageIndex] +
+                    (pageIndex - 1) * this.itemsPerView * this.carouselElementWidth);
+                this.currentSlideIndex =
+                    this.itemsPerPage[pageIndex] < this.itemsPerView
+                        ? pageIndex * this.itemsPerView -
+                            (this.itemsPerView - this.itemsPerPage[pageIndex])
+                        : pageIndex * this.itemsPerView;
+            }
+            else {
+                this.translateValue = -(this.carouselElementWidth *
+                    this.itemsPerView *
+                    pageIndex);
+                this.currentSlideIndex = this.itemsPerView * pageIndex;
+            }
+            this.currentPageIndex = pageIndex;
+        },
+        onDragNext: function () {
+            if (this.draggable) {
+                this.next();
+            }
+        },
+        onDragPrev: function () {
+            if (this.draggable) {
+                this.prev();
+            }
+        },
+        stopAutoplay: function () {
+            if (this.stopAutoplayHover) {
+                clearInterval(this.autoplayIntervalId);
+            }
+        },
+        startAutoplay: function () {
+            var _this = this;
+            if (this.autoplay) {
+                this.autoplayIntervalId = setInterval(function () {
+                    _this.next(true);
+                }, this.autoplayTimeout);
+            }
+        },
+        initialize: function () {
+            var _this = this;
+            this.disabled = false;
+            this.startAutoplay();
+            window.addEventListener("resize", this.setCarouselSizingSettings);
+            this.$nextTick(function () {
+                _this.setCarouselSizingSettings();
+            });
+        },
+        destroy: function () {
+            this.disabled = true;
+            this.stopAutoplay();
+            window.removeEventListener("resize", this.setCarouselSizingSettings);
+        }
+    }
+});
 
 function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
 /* server only */
@@ -456,7 +408,7 @@ function addStyle(id, css) {
 var browser = createInjector;
 
 /* script */
-var __vue_script__ = Carousel;
+var __vue_script__ = script;
 
 /* template */
 var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"carousel-wrapper"},[(_vm.disabled)?_c('div',{staticClass:"carousel__disable-wrapper"},[_vm._t("default")],2):_c('div',{ref:"carousel",staticClass:"carousel",style:({
@@ -487,11 +439,11 @@ var __vue_staticRenderFns__ = [];
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-57e5b6db_0", { source: ".carousel[data-v-57e5b6db]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-57e5b6db]{display:flex;flex:1}.carousel__element[data-v-57e5b6db]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-57e5b6db]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-57e5b6db]{right:0}.carousel__button--prev[data-v-57e5b6db]{left:0}.carousel__dots[data-v-57e5b6db]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-57e5b6db]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-57e5b6db]{opacity:.7}.carousel__dot[data-v-57e5b6db]:hover{opacity:.8}", map: undefined, media: undefined });
+    inject("data-v-1bf3129a_0", { source: ".carousel[data-v-1bf3129a]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-1bf3129a]{display:flex;flex:1}.carousel__element[data-v-1bf3129a]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-1bf3129a]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-1bf3129a]{right:0}.carousel__button--prev[data-v-1bf3129a]{left:0}.carousel__dots[data-v-1bf3129a]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-1bf3129a]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-1bf3129a]{opacity:.7}.carousel__dot[data-v-1bf3129a]:hover{opacity:.8}", map: undefined, media: undefined });
 
   };
   /* scoped */
-  var __vue_scope_id__ = "data-v-57e5b6db";
+  var __vue_scope_id__ = "data-v-1bf3129a";
   /* module identifier */
   var __vue_module_identifier__ = undefined;
   /* functional template */

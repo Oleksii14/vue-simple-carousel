@@ -14,11 +14,11 @@ const config = {
     name: "Vue2SimpleCarousel",
     exports: "named",
     globals: {
-      "vue-property-decorator": "vuePropertyDecorator",
+      vue: "Vue",
       "vue2-touch-events": "Vue2TouchEvents"
     }
   },
-  external: ["vue2-touch-events", "vue-property-decorator"],
+  external: ["vue", "vue2-touch-events"],
   plugins: [
     replace({
       "process.env.NODE_ENV": JSON.stringify("production")
