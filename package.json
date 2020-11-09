@@ -36,8 +36,10 @@
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife --file dist/vuesimplecarousel.min.js"
   },
   "peerDependencies": {
-    "vue": "2.x",
-    "vue2-touch-events": "^2.x"
+    "vue": "2.x"
+  },
+  "dependencies": {
+    "vue2-touch-events": "2.3.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.26.0",
@@ -66,8 +68,7 @@
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "typescript": "~3.8.3",
-    "vue-template-compiler": "^2.6.11",
     "vue": "^2.6.11",
-    "vue2-touch-events": "^2.2.1"
+    "vue-template-compiler": "^2.6.11"
   }
 }
