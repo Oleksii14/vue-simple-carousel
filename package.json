@@ -1,6 +1,6 @@
 {
   "name": "vue2-simple-carousel",
-  "version": "0.3.20",
+  "version": "0.3.21",
   "main": "dist/vuesimplecarousel.umd.js",
   "module": "dist/vuesimplecarousel.esm.js",
   "unpkg": "dist/vuesimplecarousel.min.js",
