@@ -391,16 +391,20 @@ export default Vue.extend<Data, Methods, Computed, Props>({
     },
 
     setCarouselSizingSettings() {
-      const carouselWidth = (this.$refs.carousel as HTMLDivElement).offsetWidth;
-      const elementsTranslated =
-        this.translateValue / this.carouselElementWidth || 0;
+      const carousel = this.$refs.carousel as HTMLDivElement;
 
-      this.carouselElementWidth = carouselWidth / this.itemsPerView;
-      this.trackWidth = this.carouselElementWidth * this.itemsCount;
+      if (carousel) {
+        const carouselWidth = carousel.offsetWidth;
+        const elementsTranslated =
+          this.translateValue / this.carouselElementWidth || 0;
 
-      const translateValue = elementsTranslated * this.carouselElementWidth;
-      this.translateValue =
-        this.translateValue < 0 ? translateValue : -translateValue;
+        this.carouselElementWidth = carouselWidth / this.itemsPerView;
+        this.trackWidth = this.carouselElementWidth * this.itemsCount;
+
+        const translateValue = elementsTranslated * this.carouselElementWidth;
+        this.translateValue =
+          this.translateValue < 0 ? translateValue : -translateValue;
+      }
     },
 
     goToPage(pageIndex: number) {

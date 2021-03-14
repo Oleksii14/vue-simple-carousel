@@ -203,13 +203,16 @@ var script = Vue.extend({
             }
         },
         setCarouselSizingSettings: function () {
-            var carouselWidth = this.$refs.carousel.offsetWidth;
-            var elementsTranslated = this.translateValue / this.carouselElementWidth || 0;
-            this.carouselElementWidth = carouselWidth / this.itemsPerView;
-            this.trackWidth = this.carouselElementWidth * this.itemsCount;
-            var translateValue = elementsTranslated * this.carouselElementWidth;
-            this.translateValue =
-                this.translateValue < 0 ? translateValue : -translateValue;
+            var carousel = this.$refs.carousel;
+            if (carousel) {
+                var carouselWidth = carousel.offsetWidth;
+                var elementsTranslated = this.translateValue / this.carouselElementWidth || 0;
+                this.carouselElementWidth = carouselWidth / this.itemsPerView;
+                this.trackWidth = this.carouselElementWidth * this.itemsCount;
+                var translateValue = elementsTranslated * this.carouselElementWidth;
+                this.translateValue =
+                    this.translateValue < 0 ? translateValue : -translateValue;
+            }
         },
         goToPage: function (pageIndex) {
             if (this.currentPageIndex === pageIndex) {
@@ -439,11 +442,11 @@ var __vue_staticRenderFns__ = [];
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-1bf3129a_0", { source: ".carousel[data-v-1bf3129a]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-1bf3129a]{display:flex;flex:1}.carousel__element[data-v-1bf3129a]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-1bf3129a]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-1bf3129a]{right:0}.carousel__button--prev[data-v-1bf3129a]{left:0}.carousel__dots[data-v-1bf3129a]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-1bf3129a]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-1bf3129a]{opacity:.7}.carousel__dot[data-v-1bf3129a]:hover{opacity:.8}", map: undefined, media: undefined });
+    inject("data-v-5d4c60d6_0", { source: ".carousel[data-v-5d4c60d6]{width:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}.carousel__track[data-v-5d4c60d6]{display:flex;flex:1}.carousel__element[data-v-5d4c60d6]{flex:1;user-select:none;display:flex;align-items:center;justify-content:center}.carousel__button[data-v-5d4c60d6]{position:absolute;top:50%;z-index:2;transform:translateY(-50%)}.carousel__button--next[data-v-5d4c60d6]{right:0}.carousel__button--prev[data-v-5d4c60d6]{left:0}.carousel__dots[data-v-5d4c60d6]{display:flex;align-items:center;justify-content:center}.carousel__dot[data-v-5d4c60d6]{padding:0;outline:0;cursor:pointer;border-radius:50%}.carousel__dot--active[data-v-5d4c60d6]{opacity:.7}.carousel__dot[data-v-5d4c60d6]:hover{opacity:.8}", map: undefined, media: undefined });
 
   };
   /* scoped */
-  var __vue_scope_id__ = "data-v-1bf3129a";
+  var __vue_scope_id__ = "data-v-5d4c60d6";
   /* module identifier */
   var __vue_module_identifier__ = undefined;
   /* functional template */
